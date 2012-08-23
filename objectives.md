@@ -12,7 +12,7 @@ Cluster 1: nodejump
 ## MAYBE
 
 - enh: add logic to define forms with markdown, also allow to define a submit button, which will by default append the data from the form to the current node (but also other node can be specified). 
-- enh: add ‘new application’ button to nodejump - this will append and link an application to the currently open node
+- enh: add 'new application' button to nodejump - this will append and link an application to the currently open node
  - especially useful in combination with the forms (see above).
 
 ## DONE

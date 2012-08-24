@@ -8,8 +8,11 @@
 		var elem = params.elem;
 		var client = params.client;
 
-		nj.valueCache = null;
 		nj.isChanged = false;
+		
+		// the last loaded/ edited value.
+		nj.valueCache = null;
+		
 		// the reference to the currently open document
 		nj.loadedNode = null;
 		// access secret for current document
@@ -55,16 +58,17 @@
 					indentWithTabs : true,
 					lineWrapping : true,
 					onChange : function(editor, changeParams) {
-						if (nj.loadedNode) {
-							nj.isChanged = true;
 
-							nj.view.load(nj.loadedNode.url(), nj.secret, {
-								onSuccess : function() {
-								},
-								onFailure : function() {
-								}
-							});
+						if (nj.loadedNode) {
+							var currentValue = editor.getValue().valueOf();
+							if (currentValue === nj.valueCache) {
+								return;
+							}
+							
+							nj.valueCache = currentValue;
+							nj.isChanged = true;
 						}
+
 					}
 				});
 
@@ -87,15 +91,17 @@
 
 		nj.load = function(node, secret, callback) {
 
+			nj.loadedNode = node;
+			nj.secret = secret;
+			
 			client.load({
 				node : node,
 				secret : secret,
 				onSuccess : function(res) {
 					nj.valueCache = client.dereference({
 						ref : node
-					}).value();
-					nj.loadedNode = node;
-					nj.secret = secret;
+					}).value().valueOf();
+					
 
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
@@ -106,26 +112,38 @@
 					nj.edit.load(node.url(), secret, function() {
 
 					});
+					
+					callback();
 				}
 			});
 
 		};
 
 		nj.commit = function() {
-			if (nj.valueChanged) {
+			if (nj.isChanged) {
 
 				var currentValue = nj.edit.getValue();
-
+				
+				
+				
 				var newValueNode = client.updateValue({
 					forNode : nj.loadedNode,
-					newValue : currentValue
+					newValue : currentValue.valueOf()
 				});
 
 				client.replace({
 					node : nj.loadedNode,
 					withNode : newValueNode
 				});
-				nj.valueChanged = false;
+
+				nj.view.load(nj.loadedNode.url(), nj.secret, {
+					onSuccess : function() {
+					},
+					onFailure : function() {
+					}
+				});
+
+				nj.isChanged = false;
 
 				client.commit({
 					onSuccess : function() {
@@ -138,7 +156,7 @@
 		nj.startAutoCommit = function() {
 			nj.committer = setInterval(function() {
 				nj.commit();
-			}, 1000);
+			}, 500);
 		};
 
 		nj.stopAutoCommit = function() {
@@ -147,27 +165,29 @@
 		};
 
 		nj.startAutoRefresh = function() {
-			if (nj.loadedNode) {
-				nj.monitor = client
-						.monitor({
-							node : nj.loadedNode,
-							interval : 2000,
-							onChange : function(res) {
-								if (nj.valueChanged) {
-									AJ.ui
-											.notify(
-													"Someone changed this document while you were editing.",
-													"alert-warning");
-									return;
-								}
-
-								nj.load(nj.loadedNode, nj.secret, function() {
-
-								});
-
+			if (!nj.loadedNode) throw "Auto refresh can only be started after a node is loaded.";
+			
+			
+			nj.monitor = client
+					.monitor({
+						node : nj.loadedNode,
+						interval : 2000,
+						onChange : function(res) {
+							if (nj.isChanged) {
+								AJ.ui
+										.notify(
+												"Someone changed this document while you were editing.",
+												"alert-warning");
+								return;
 							}
-						});
-			}
+
+							nj.load(nj.loadedNode, nj.secret, function() {
+
+							});
+
+						}
+					});
+
 		};
 
 		nj.stopAutoRefresh = function() {

@@ -16,7 +16,7 @@
 		nj.view = null;
 		nj.monitor = null;
 		nj.committer = null;
-		
+
 		nj.initComponents = function() {
 
 			var renderers = AJ.odb.rendering().createDefaultRendererRegistry();
@@ -32,7 +32,7 @@
 
 			nj.edit.setEditorFactory(function() {
 				$(".editorContent", elem).show(); // to assure codemirror is
-													// rendered
+				// rendered
 				// correctly.
 
 				var editorElem = $(".textArea", elem).get(0);
@@ -49,13 +49,16 @@
 					indentWithTabs : true,
 					lineWrapping : true,
 					onChange : function(editor, changeParams) {
-						nj.isChanged = true;
-						nj.view.load(node.url(), secret, {
-							onSuccess : function() {
-							},
-							onFailure : function() {
-							}
-						});
+						if (nj.loadedNode) {
+							nj.isChanged = true;
+
+							nj.view.load(nj.loadedNode.url(), secret, {
+								onSuccess : function() {
+								},
+								onFailure : function() {
+								}
+							});
+						}
 					}
 				});
 
@@ -82,9 +85,13 @@
 				node : node,
 				secret : secret,
 				onSuccess : function(res) {
-					nj.valueCache = client.dereference({ref: node}).value();
-					
-					nj.view.load(node.url(), secret, {
+					nj.valueCache = client.dereference({
+						ref : node
+					}).value();
+					nj.loadedNode = node;
+					nj.secret = secret;
+
+					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
 						},
 						onFailure : function() {
@@ -100,66 +107,80 @@
 
 		nj.commit = function() {
 			if (nj.valueChanged) {
-				
+
 				var currentValue = nj.edit.getValue();
 
-				var newValueNode = client.updateValue({forNode: nj.loadedNode, currentValue });
-				
-				client.replace({node: nj.loadedNode, withNode: newValueNode});
+				var newValueNode = client.updateValue({
+					forNode : nj.loadedNode,
+					newValue : currentValue
+				});
+
+				client.replace({
+					node : nj.loadedNode,
+					withNode : newValueNode
+				});
 				nj.valueChanged = false;
-				
-				client.commit({onSuccess: function() {
-					
-				}});
-			}
-		};
-		
-		nj.startAutoCommit = function() {
-			nj.committer = setInterval(function(){
-				nj.commit();
-			}, 1000);
-		};
-		
-		
-		nj.stopAutoCommit = function() {
-			nj.commit();
-			clearInterval(nj.committer);
-		};
-		
-		nj.startAutoRefresh = function() {
-			if (nj.loadedNode) {
-				nj.monitor = client.monitor({node: nj.loadedNode,
-					interval: 2000,
-					onChange: function(res) {
-						if (nj.valueChanged) {
-							AJ.ui.notify("Someone changed this document while you were editing.", "alert-warning");
-							return;
-						}
-						
-						nj.load(nj.loadedNode, nj.secret, function() {
-							
-						});
-						
+
+				client.commit({
+					onSuccess : function() {
+
 					}
 				});
 			}
 		};
-		
+
+		nj.startAutoCommit = function() {
+			nj.committer = setInterval(function() {
+				nj.commit();
+			}, 1000);
+		};
+
+		nj.stopAutoCommit = function() {
+			nj.commit();
+			clearInterval(nj.committer);
+		};
+
+		nj.startAutoRefresh = function() {
+			if (nj.loadedNode) {
+				nj.monitor = client
+						.monitor({
+							node : nj.loadedNode,
+							interval : 2000,
+							onChange : function(res) {
+								if (nj.valueChanged) {
+									AJ.ui
+											.notify(
+													"Someone changed this document while you were editing.",
+													"alert-warning");
+									return;
+								}
+
+								nj.load(nj.loadedNode, nj.secret, function() {
+
+								});
+
+							}
+						});
+			}
+		};
+
 		nj.stopAutoRefresh = function() {
 			if (nj.monitor) {
-				nj.monitor.stop({onSuccess: function() {
-					
-				}});
+				nj.monitor.stop({
+					onSuccess : function() {
+
+					}
+				});
 				nj.monitor = null;
 			}
 		};
-		
+
 		return {
 			load : nj.load,
-			initComponents : nj.initComponents
-			startAutoCommit: nj.startAutoCommit,
+			initComponents : nj.initComponents,
+			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
-			startAutoRefresh: nj.startAutoRefresh,
+			startAutoRefresh : nj.startAutoRefresh,
 			stopAutoRefresh : nj.stopAutoRefresh
 		};
 	};

@@ -222,8 +222,6 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 
 
 	<script>
-<!-- one.embedText("https://u1.linnk.it/qc8sbw/usr/apps/ajMicroSync/docs/nodejump-app-0.0.1") -->
-
 </script>
 
 	<script>
@@ -249,6 +247,9 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 			
 		} );
 		
+		nodejump.startAutoCommit();
+		nodejump.startAutoRefresh();
+		
 		$(window).hashchange( function(){
 			if (!lastInjectedHashValue || !(window.location.hash.valueOf() === lastInjectedHashValue.valueOf())) {
 				
@@ -257,8 +258,13 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		});
 		
 		 
+		$(window).focus(function() {
+		    
+		});
 		
-		
+		$(window).blur(function() {
+			 
+		});
 
 	}
 

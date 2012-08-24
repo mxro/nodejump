@@ -8,9 +8,15 @@
 		var elem = params.elem;
 		var client = params.client;
 
+		nj.valueCache = null;
+		nj.isChanged = false;
+		nj.loadedNode = null;
+		nj.secret = null;
 		nj.edit = null;
 		nj.view = null;
-
+		nj.monitor = null;
+		nj.committer = null;
+		
 		nj.initComponents = function() {
 
 			var renderers = AJ.odb.rendering().createDefaultRendererRegistry();
@@ -43,7 +49,13 @@
 					indentWithTabs : true,
 					lineWrapping : true,
 					onChange : function(editor, changeParams) {
-
+						nj.isChanged = true;
+						nj.view.load(node.url(), secret, {
+							onSuccess : function() {
+							},
+							onFailure : function() {
+							}
+						});
 					}
 				});
 
@@ -70,6 +82,8 @@
 				node : node,
 				secret : secret,
 				onSuccess : function(res) {
+					nj.valueCache = client.dereference({ref: node}).value();
+					
 					nj.view.load(node.url(), secret, {
 						onSuccess : function() {
 						},
@@ -84,9 +98,69 @@
 
 		};
 
+		nj.commit = function() {
+			if (nj.valueChanged) {
+				
+				var currentValue = nj.edit.getValue();
+
+				var newValueNode = client.updateValue({forNode: nj.loadedNode, currentValue });
+				
+				client.replace({node: nj.loadedNode, withNode: newValueNode});
+				nj.valueChanged = false;
+				
+				client.commit({onSuccess: function() {
+					
+				}});
+			}
+		};
+		
+		nj.startAutoCommit = function() {
+			nj.committer = setInterval(function(){
+				nj.commit();
+			}, 1000);
+		};
+		
+		
+		nj.stopAutoCommit = function() {
+			nj.commit();
+			clearInterval(nj.committer);
+		};
+		
+		nj.startAutoRefresh = function() {
+			if (nj.loadedNode) {
+				nj.monitor = client.monitor({node: nj.loadedNode,
+					interval: 2000,
+					onChange: function(res) {
+						if (nj.valueChanged) {
+							AJ.ui.notify("Someone changed this document while you were editing.", "alert-warning");
+							return;
+						}
+						
+						nj.load(nj.loadedNode, nj.secret, function() {
+							
+						});
+						
+					}
+				});
+			}
+		};
+		
+		nj.stopAutoRefresh = function() {
+			if (nj.monitor) {
+				nj.monitor.stop({onSuccess: function() {
+					
+				}});
+				nj.monitor = null;
+			}
+		};
+		
 		return {
 			load : nj.load,
 			initComponents : nj.initComponents
+			startAutoCommit: nj.startAutoCommit,
+			stopAutoCommit : nj.stopAutoCommit,
+			startAutoRefresh: nj.startAutoRefresh,
+			stopAutoRefresh : nj.stopAutoRefresh
 		};
 	};
 

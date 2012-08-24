@@ -32,6 +32,8 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 .CodeMirror {
 	border-top: 1px solid black;
 	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+	font-size: 12pt;
 }
 
 .CodeMirror-scroll {
@@ -74,59 +76,59 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 			<div class="span12">
 				<div id="nodejumpapp">
 
-					<div class="container-fluid">
-						<div class="row-fluid">
-							<div class="btn-toolbar">
-								<div class="btn-group">
-									<button class="btn btn-inverse">Insert Link</button>
-									<button class="btn btn-inverse dropdown-toggle"
-										data-toggle="dropdown">
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu">
-										<li><a href="#">To New Page</a></li>
-										<li><a href="#">To Hyperlink</a></li>
 
-									</ul>
+					<div class="row-fluid">
+						<div class="btn-toolbar">
+							<div class="btn-group">
+								<button class="btn btn-inverse">Insert Link</button>
+								<button class="btn btn-inverse dropdown-toggle"
+									data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="#">To New Page</a></li>
+									<li><a href="#">To Hyperlink</a></li>
 
-								</div>
-								<div class="btn-group">
-									<button class="btn btn-inverse">Share</button>
-								</div>
+								</ul>
+
+							</div>
+							<div class="btn-group">
+								<button class="btn btn-inverse">Share</button>
 							</div>
 						</div>
-						<div class="row-fluid">
-							<div class="span6">
-								<div class="editor">
+					</div>
+					<div class="row-fluid">
+						<div class="span6">
+							<div class="editor">
 
-									<div class="row-fluid">
-										<div class="span12">Edit</div>
-									</div>
-									<div class="row-fluid">
-										<div class="editorContent">
-											<textarea class="textArea"></textarea>
-										</div>
-									</div>
-
-
+								<div class="row-fluid">
+									<div class="span12">Edit</div>
 								</div>
-							</div>
-							<div class="span6">
-								<div class="browser">
-									<div class="row-fluid">
-										<div class="span12">View + Browse</div>
+								<div class="row-fluid">
+									<div class="editorContent" style="display: none">
+										<textarea class="textArea"></textarea>
 									</div>
-									<div class="row-fluid">
-										<div class="editorContent">
-											<div class="viewContent"></div>
-										</div>
+								</div>
+
+
+							</div>
+						</div>
+						<div class="span6">
+							<div class="browser">
+								<div class="row-fluid">
+									<div class="span12">View + Browse</div>
+								</div>
+								<div class="row-fluid">
+									<div class="viewComponent">
+										<div class="viewContent"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-
 				</div>
+
+
 			</div>
 		</div>
 
@@ -219,7 +221,7 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 </script>
 
 
-<script>
+	<script>
 <!-- one.embedText("https://u1.linnk.it/qc8sbw/usr/apps/ajMicroSync/docs/nodejump-app-0.0.1") -->
 
 </script>
@@ -237,8 +239,15 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		var lastInjectedHashValue = null;
 		
 		
-		var nodejump = $.initNodeJumpApp({elem: $("#nodejumpapp")});
+		var nodejump = $.initNodeJumpApp({elem: $("#nodejumpapp"),
+			client: client});
 		
+		nodejump.initComponents();
+		
+		
+		nodejump.load(client.reference("http://slicnet.com/mxrogm/mxrogm/apps/edit/docs/2/4/doc"), "wrongsecret", function() {
+			
+		} );
 		
 		$(window).hashchange( function(){
 			if (!lastInjectedHashValue || !(window.location.hash.valueOf() === lastInjectedHashValue.valueOf())) {

@@ -4,7 +4,7 @@
 
 ## MUST
 
-Cluster 1: nodejump
+- set up github project and dev environment.
 
 - implement markdown node editor with markdown preview
  - to this editor add +link button 

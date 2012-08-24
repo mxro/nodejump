@@ -107,7 +107,7 @@
 
 		nj.commit = function() {
 			if (nj.loadedNode) {
-				nj.edit.save(function(wasChanged) {
+				nj.edit.commitOrReload(function(wasChanged) {
 					if (wasChanged) {
 						nj.view.load(nj.loadedNode.url(), nj.secret, {
 							onSuccess : function() {

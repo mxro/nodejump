@@ -10,11 +10,17 @@
 
 		nj.valueCache = null;
 		nj.isChanged = false;
+		// the reference to the currently open document
 		nj.loadedNode = null;
+		// access secret for current document
 		nj.secret = null;
+		// editor component
 		nj.edit = null;
+		// view component
 		nj.view = null;
+		// monitor for auto-refresh
 		nj.monitor = null;
+		// timer for auto-commit
 		nj.committer = null;
 
 		nj.initComponents = function() {
@@ -52,7 +58,7 @@
 						if (nj.loadedNode) {
 							nj.isChanged = true;
 
-							nj.view.load(nj.loadedNode.url(), secret, {
+							nj.view.load(nj.loadedNode.url(), nj.secret, {
 								onSuccess : function() {
 								},
 								onFailure : function() {

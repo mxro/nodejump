@@ -4,10 +4,9 @@
 
 ## MUST
 
-- set up github project and dev environment.
 
-- implement markdown node editor with markdown preview
- - to this editor add +link button 
+- enh: improve speed, in which Markdown preview is updated!
+- enh: add to this editor add +link button 
 
 ## MAYBE
 
@@ -17,4 +16,7 @@
 
 ## DONE
 
-### 0.0.1<!-- one.end -->
+### 0.0.1
+
+- admin: set up github project and dev environment.
+- enh: implement markdown node editor with markdown preview<!-- one.end -->

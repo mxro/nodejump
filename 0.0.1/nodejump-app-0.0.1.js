@@ -76,6 +76,17 @@
 
 				}
 			});
+			
+			nj.edit.setTextChangeListener(function() {
+					nj.view.load(nj.loadedNode.url(), nj.secret, {
+						onSuccess : function() {
+						},
+						onFailure : function(ex) {
+							Aj.ui.notify("Unexpected exception while loading node: "+ex, "alert-error");
+						}
+					});
+				
+			});
 
 		};
 
@@ -105,53 +116,26 @@
 
 		};
 
-		nj.commit = function() {
+		nj.commitLocal = function(callback) {
 			if (nj.loadedNode) {
-				nj.edit.commitOrReload(function(wasChanged) {
-					if (wasChanged) {
-						nj.view.load(nj.loadedNode.url(), nj.secret, {
-							onSuccess : function() {
-							},
-							onFailure : function() {
-							}
-						});
-					}
-				});
+				nj.edit.commitLocal(callback);
 			}
-
-			// var currentValue = nj.edit.getValue();
-			//
-			// var newValueNode = client.updateValue({
-			// forNode : nj.loadedNode,
-			// newValue : currentValue.valueOf()
-			// });
-			//
-			// client.replace({
-			// node : nj.loadedNode,
-			// withNode : newValueNode
-			// });
-			//
-			// nj.view.load(nj.loadedNode.url(), nj.secret, {
-			// onSuccess : function() {
-			// },
-			// onFailure : function() {
-			// }
-			// });
-			//
-			// nj.isChanged = false;
-			//
-			// client.commit({
-			// onSuccess : function() {
-			//
-			// }
-			// });
-
 		};
 
+		nj.commitOrLoadRemote = function(callback) {
+			if (nj.loadedNode) {
+				nj.edit.commitOrReload(function(wasChanged) {
+					
+				});
+			}
+		}
+		
 		nj.startAutoCommit = function() {
 			nj.committer = setInterval(function() {
-				nj.commit();
-			}, 2000);
+				nj.commitLocal(function() {
+					
+				});
+			}, 500);
 		};
 
 		nj.stopAutoCommit = function() {
@@ -162,39 +146,16 @@
 		nj.startAutoRefresh = function() {
 			if (!nj.loadedNode)
 				throw "Auto refresh can only be started after a node is loaded.";
-
-			// return;
-			// nj.monitor = client
-			// .monitor({
-			// node : nj.loadedNode,
-			// interval : 2000,
-			// onChange : function(res) {
-			// // if (nj.isChanged) {
-			// // AJ.ui
-			// // .notify(
-			// // "Someone changed this document while you were editing.",
-			// // "alert-warning");
-			// // return;
-			// // }
-			//
-			// nj.load(nj.loadedNode, nj.secret, function() {
-			//
-			// });
-			//
-			// }
-			// });
-
+			nj.monitor = setInterval(function() {
+				nj.commitOrLoadRemote(function() {
+					
+				});
+			}, 2000);
+			
 		};
 
 		nj.stopAutoRefresh = function() {
-			if (nj.monitor) {
-				nj.monitor.stop({
-					onSuccess : function() {
-
-					}
-				});
-				nj.monitor = null;
-			}
+			clearInterval(nj.monitor);
 		};
 
 		return {

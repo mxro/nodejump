@@ -100,17 +100,28 @@
 				secret : secret,
 				onSuccess : function(res) {
 
+					var counter = 0;
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
+							counter++;
+							if (counter == 2) {
+								counter = -5;
+								callback();
+							}
 						},
 						onFailure : function() {
 						}
 					});
 					nj.edit.load(node.url(), secret, function() {
 						nj.valueCache = nj.edit.getValue().valueOf();
+						counter++;
+						if (counter == 2) {
+							counter = -5;
+							callback();
+						}
 					});
 
-					callback();
+					
 				}
 			});
 
@@ -131,31 +142,41 @@
 		}
 		
 		nj.startAutoCommit = function() {
+			if (nj.committer) return;
 			nj.committer = setInterval(function() {
 				nj.commitLocal(function() {
 					
 				});
-			}, 500);
+			}, 900);
 		};
 
 		nj.stopAutoCommit = function() {
-			nj.commit();
+			nj.commitLocal(function() {
+				
+			});
 			clearInterval(nj.committer);
+			nj.committer = null;
 		};
 
 		nj.startAutoRefresh = function() {
-			if (!nj.loadedNode)
-				throw "Auto refresh can only be started after a node is loaded.";
+			if (nj.monitor) return;
 			nj.monitor = setInterval(function() {
 				nj.commitOrLoadRemote(function() {
 					
 				});
 			}, 2000);
+			nj.commitOrLoadRemote(function() {
+				
+			});
 			
 		};
 
 		nj.stopAutoRefresh = function() {
+			nj.commitOrLoadRemote(function() {
+				
+			});
 			clearInterval(nj.monitor);
+			nj.monitor = null;
 		};
 
 		return {

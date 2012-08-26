@@ -2,19 +2,20 @@
 <!-- one.download http://slicnet.com/mxrogm/mxrogm/apps/edit/docs/5/6/doc -->
 # nodejump Objectives
 
-## MUST
+This document outlines the directions for the nodejump application.
 
-- enh: implement startup for logged in and anonymous users
+## Must
 
 - enh: build a share-ui model, which can also be used by edit and view
 
-- enh: improve speed, in which Markdown preview is updated!
- - event listener for editor
- - editor seperate methods for commit to local network, commit to remote partner and load updates from remote partner
+- enh/nodejump: implement insert link button very basic feature (automatically inserts link to new child) 
 
-- enh: add to this editor add +link button 
+## Maybe
 
-## MAYBE
+- enh: enable 'templates', which allow to build documents based on one or a cluster of connected documents
+ - these can include applications (linked with onexite)
+ - these can include forms (see below)
+ - for instance for task management, managing implementation objectives, managing your personal data
 
 - enh: when text is selected before <button>Insert Link</button> is clicked, this text will automatically be cut & paste into the new document.
 
@@ -29,4 +30,8 @@
 ### 0.0.1
 
 - admin: set up github project and dev environment.
-- enh: implement markdown node editor with markdown preview<!-- one.end -->
+- enh: implement markdown node editor with markdown preview
+- enh: improve speed, in which Markdown preview is updated!
+ - event listener for editor
+ - editor seperate methods for commit to local network, commit to remote partner and load updates from remote partner
+ - DONE, 26/8/2012<!-- one.end -->

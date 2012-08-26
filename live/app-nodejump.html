@@ -116,7 +116,7 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 						<div class="span6">
 							<div class="browser">
 								<div class="row-fluid">
-									<div class="span12">View + Browse</div>
+									<div class="span12">Preview + Browse</div>
 								</div>
 								<div class="row-fluid">
 									<div class="viewComponent">
@@ -261,11 +261,13 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		
 		 
 		$(window).focus(function() {
-		    
+			nodejump.startAutoCommit();
+			nodejump.startAutoRefresh();
 		});
 		
 		$(window).blur(function() {
-			 
+			nodejump.stopAutoCommit();
+			nodejump.stopAutoRefresh();
 		});
 
 	}

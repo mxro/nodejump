@@ -6,9 +6,9 @@ This document outlines the directions for the nodejump application.
 
 ## Must
 
-- enh: build a share-ui model, which can also be used by edit and view
 
-- enh/nodejump: implement insert link button very basic feature (automatically inserts link to new child) 
+
+
 
 ## Maybe
 

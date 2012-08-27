@@ -102,6 +102,12 @@
 
 		}
 
+		nj.initForUser = function(onSuccess) {
+			nj.priv.createNewUserDocument(function(node, secret)) {
+				nj.load(node, secret, onSuccess);
+			});
+		}
+		
 		nj.load = function(node, secret, callback) {
 
 			nj.loadedNode = node;
@@ -217,6 +223,26 @@
 			});
 		};
 
+		nj.priv.createNewUserDocument = function(onSuccess) {
+			nj.priv.assertDocDbNode(function(docNode, secret) {
+				AJ.common.appendDeep({
+					client: client,
+					toNode: docNode,
+					secret: AJ.userNodeSecret,
+					nodeFactory : function() {
+						return "# Documents";
+					},
+					onSuccess : function(node, secret) {
+						onSuccess(node, secret);
+					},
+					onFailure: function(ex) {
+						AJ.ui.notify("Unexpected exception while creating new document: "+ex);
+					}
+				});
+			});
+
+		};
+
 		nj.priv.assertDocDbNode = function(onSuccess) {
 
 			client.load({
@@ -271,6 +297,7 @@
 			load : nj.load,
 			initComponents : nj.initComponents,
 			initForAnonymous : nj.initForAnonymous,
+			initForUser : nj.initForUser,
 			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
 			startAutoRefresh : nj.startAutoRefresh,

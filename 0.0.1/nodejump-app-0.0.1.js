@@ -78,29 +78,30 @@
 
 				}
 			});
-			
+
 			nj.edit.setTextChangeListener(function() {
-					nj.view.load(nj.loadedNode.url(), nj.secret, {
-						onSuccess : function() {
-						},
-						onFailure : function(ex) {
-							Aj.ui.notify("Unexpected exception while loading node: "+ex, "alert-error");
-						}
-					});
-				
+				nj.view.load(nj.loadedNode.url(), nj.secret, {
+					onSuccess : function() {
+					},
+					onFailure : function(ex) {
+						Aj.ui.notify(
+								"Unexpected exception while loading node: "
+										+ ex, "alert-error");
+					}
+				});
+
 			});
 
 		};
 
-		
 		nj.initForAnonymous = function(onSuccess) {
-			
+
 			nj.priv.createAnonymousDocument(function(node, secret) {
 				nj.load(node, secret, onSuccess);
 			});
-			
+
 		}
-		
+
 		nj.load = function(node, secret, callback) {
 
 			nj.loadedNode = node;
@@ -132,7 +133,6 @@
 						}
 					});
 
-					
 				}
 			});
 
@@ -147,72 +147,126 @@
 		nj.commitOrLoadRemote = function(callback) {
 			if (nj.loadedNode) {
 				nj.edit.commitOrReload(function(wasChanged) {
-					
+
 				});
 			}
 		}
-		
+
 		nj.startAutoCommit = function() {
-			if (nj.committer) return;
+			if (nj.committer)
+				return;
 			nj.committer = setInterval(function() {
 				nj.commitLocal(function() {
-					
+
 				});
 			}, 900);
 		};
 
 		nj.stopAutoCommit = function() {
 			nj.commitLocal(function() {
-				
+
 			});
 			clearInterval(nj.committer);
 			nj.committer = null;
 		};
 
 		nj.startAutoRefresh = function() {
-			if (nj.monitor) return;
+			if (nj.monitor)
+				return;
 			nj.monitor = setInterval(function() {
 				nj.commitOrLoadRemote(function() {
-					
+
 				});
 			}, 2000);
 			nj.commitOrLoadRemote(function() {
-				
+
 			});
-			
+
 		};
 
 		nj.stopAutoRefresh = function() {
 			nj.commitOrLoadRemote(function() {
-				
+
 			});
 			clearInterval(nj.monitor);
 			nj.monitor = null;
 		};
 
 		nj.priv = {};
-		
-		nj.priv.createAnonymousDocument = function(callback) {
+
+		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({
-				onSuccess: function(res) {
-					
+				onSuccess : function(res) {
+
 					var rootNode = client.append({
 						node : "# Documents",
-						to: res.root,
+						to : res.root,
 						atAddress : "./nj"
 					});
-					
+
 					AJ.common.configureMarkdownNode(client, rootNode);
-					
-					callback(rootNode, res.secret);
-					
+
+					onSuccess(rootNode, res.secret);
+
 				},
-				onFailure: function(ex) {
-					AJ.ui.notify("Unexpected error while creating anonymous document: " +ex, "alert-error");
+				onFailure : function(ex) {
+					AJ.ui.notify(
+							"Unexpected error while creating anonymous document: "
+									+ ex, "alert-error");
 				}
 			});
 		};
-		
+
+		nj.priv.assertDocDbNode = function(onSuccess) {
+
+			client.load({
+				url : AJ.userNodeUri + "/apps/nodejump/docs",
+				secret : AJ.userNodeSecret,
+				onSuccess : function(res) {
+					onSuccess(res.loadedNode, AJ.userNodeSecret);
+				},
+				onUndefined : function(res) {
+					nj.priv.assertAppData(function(node, secret) {
+						client.assertChild({
+							forNode : node,
+							withPath : "docs",
+							onSuccess : function(res) {
+								onSuccess(res.childNode, secret);
+							},
+							onFailure : function(ex) {
+								AJ.ui.notify(
+										"Unexpected exception while creating document database: "
+												+ ex, "alert-error");
+							}
+
+						});
+					});
+				},
+				onFailure : function(ex) {
+					AJ.ui.notify(
+							"Unexpected exception while accessing document database: "
+									+ ex, "alert-error");
+				}
+			});
+
+		};
+
+		nj.priv.assertAppData = function(onSuccess) {
+
+			AJ.common.assertApplicationNode({
+				client : client,
+				applicationName : "nodejump",
+				onSuccess : function(node, secret) {
+					onSuccess(node, secret);
+
+				},
+				onFailure : function(ex) {
+
+				}
+			});
+
+		};
+
 		return {
 			load : nj.load,
 			initComponents : nj.initComponents,

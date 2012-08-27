@@ -3,6 +3,7 @@
 // node jump application module
 (function($, AJ) {
 
+	// nodejump application js
 	$.initNodeJumpApp = function(params) {
 
 		var nj = {};

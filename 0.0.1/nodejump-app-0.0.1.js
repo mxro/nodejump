@@ -93,21 +93,12 @@
 		};
 
 		
-		nj.createAnonymousDocument = function(callback) {
-			client.seed({
-				onSuccess: function(res) {
-					
-					var rootNode = client.append({
-						node : "# ",
-						to: res.root,
-						atAddress : "./nj"
-					});
-					
-				},
-				onFailure: function(ex) {
-					AJ.ui.notify("Unexpected error while creating anonymous document: " +ex, "alert-error");
-				}
+		nj.initForAnonymous = function(onSuccess) {
+			
+			nj.priv.createAnonymousDocument(function(node, secret) {
+				nj.load(node, secret, onSuccess);
 			});
+			
 		}
 		
 		nj.load = function(node, secret, callback) {
@@ -199,9 +190,33 @@
 			nj.monitor = null;
 		};
 
+		nj.priv = {};
+		
+		nj.priv.createAnonymousDocument = function(callback) {
+			client.seed({
+				onSuccess: function(res) {
+					
+					var rootNode = client.append({
+						node : "# Documents",
+						to: res.root,
+						atAddress : "./nj"
+					});
+					
+					AJ.common.configureMarkdownNode(client, rootNode);
+					
+					callback(rootNode, res.secret);
+					
+				},
+				onFailure: function(ex) {
+					AJ.ui.notify("Unexpected error while creating anonymous document: " +ex, "alert-error");
+				}
+			});
+		};
+		
 		return {
 			load : nj.load,
 			initComponents : nj.initComponents,
+			initForAnonymous : nj.initForAnonymous,
 			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
 			startAutoRefresh : nj.startAutoRefresh,

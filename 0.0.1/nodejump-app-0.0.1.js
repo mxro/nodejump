@@ -92,6 +92,24 @@
 
 		};
 
+		
+		nj.createAnonymousDocument = function(callback) {
+			client.seed({
+				onSuccess: function(res) {
+					
+					var rootNode = client.append({
+						node : "# ",
+						to: res.root,
+						atAddress : "./nj"
+					});
+					
+				},
+				onFailure: function(ex) {
+					AJ.ui.notify("Unexpected error while creating anonymous document: " +ex, "alert-error");
+				}
+			});
+		}
+		
 		nj.load = function(node, secret, callback) {
 
 			nj.loadedNode = node;

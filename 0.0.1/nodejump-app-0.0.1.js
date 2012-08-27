@@ -1,5 +1,6 @@
 // <!-- one.upload https://u1.linnk.it/qc8sbw/usr/apps/ajMicroSync/docs/nodejump-app-0.0.1 -->
 
+// node jump application module
 (function($, AJ) {
 
 	$.initNodeJumpApp = function(params) {

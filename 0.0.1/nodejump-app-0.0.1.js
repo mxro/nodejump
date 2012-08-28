@@ -257,11 +257,12 @@
 		};
 
 		nj.stopAutoCommit = function() {
+			clearInterval(nj.committer);
+			nj.committer = null;
+			
 			nj.commitLocal(function() {
 
 			});
-			clearInterval(nj.committer);
-			nj.committer = null;
 		};
 
 		nj.startAutoRefresh = function() {

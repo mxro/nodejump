@@ -248,21 +248,40 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		var lastInjectedHashValue = null;
 		
 		
-		var nodejump = $.initNodeJumpApp({elem: $("#nodejumpapp"),
-			client: client});
+		var nodejump = $.initNodeJumpApp({
+			elem: $("#nodejumpapp"),
+			client: client,
+			nodeChangeHandler: function(node, secret) {
+				window.location.hash = "#"+node.url();
+				lastInjectedHashValue = window.location.hash;
+			}
+		});
 		
 		nodejump.initComponents();
 		
-		nodejump.initForUser(function() {
+		nodejump.readHash(window.location.hash, function(hadHash) {
+			if (!hadHash) {
+				nodejump.initForUser(function() {
+					nodejump.startAutoCommit();
+					nodejump.startAutoRefresh();
+				} );
+				return;
+			}
+			
 			nodejump.startAutoCommit();
 			nodejump.startAutoRefresh();
-		} );
+		});
+		
+		
 		
 		
 		
 		$(window).hashchange( function(){
 			if (!lastInjectedHashValue || !(window.location.hash.valueOf() === lastInjectedHashValue.valueOf())) {
 				
+				nodejump.readHash(window.location.hash, function(hadHash) {
+					
+				});
 			}
 			lastInjectedHashValue = null;
 		});
@@ -291,10 +310,6 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 	}
 
 	window.onload = function() {
-
-		
-
-		$('.leftBox').resizable();
 
 	}
 </script>

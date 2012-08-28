@@ -9,7 +9,8 @@
 		var nj = {};
 		var elem = params.elem;
 		var client = params.client;
-
+		var nodeChangeHandler = params.nodeChangeHandler;
+		
 		nj.isChanged = false;
 
 		// the last loaded/ edited value.
@@ -136,6 +137,10 @@
 						if (counter == 2) {
 							counter = -5;
 							callback();
+							if (nodeChangeHandler) {
+								nodeChangeHandler(node, secret);
+							}
+							
 						}
 					});
 
@@ -144,6 +149,29 @@
 
 		};
 
+		nj.readHash = function(hash, callback) {
+			if (!hash) {
+				callback(false);
+				return;
+			}
+			
+			var link = AJ.utils.parseAppLink(hash);
+			
+			if (!link.address) {
+				callback(false);
+				return;
+			}
+			
+			
+			if (link.secret === null) {
+				link.secret = AJ.userNodeSecret;
+			}
+			
+			nodejump.load(client.reference(link.address), link.secret. function() {
+				callback(true);
+			});
+		};
+		
 		nj.commitLocal = function(callback) {
 			if (nj.loadedNode) {
 				nj.edit.commitLocal(callback);
@@ -298,6 +326,7 @@
 			initComponents : nj.initComponents,
 			initForAnonymous : nj.initForAnonymous,
 			initForUser : nj.initForUser,
+			readHash : nj.readHash,
 			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
 			startAutoRefresh : nj.startAutoRefresh,

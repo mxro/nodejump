@@ -61,7 +61,9 @@
 					indentWithTabs : true,
 					lineWrapping : true,
 					onChange : function(editor, changeParams) {
-
+						if (!$('.editStatus', elem).html() === "Loading") {
+							$(".editStatus", elem).html("Unsaved");
+						}
 					}
 				});
 
@@ -163,12 +165,19 @@
 
 		nj.load = function(node, secret, callback) {
 
+			if (!(node.url() === nj.loadedNode.url()) {
+				$('.editStatus', elem).html("Loading");
+				$('.viewStatus', elem).html("Loading");
+			}
+			
 			nj.loadedNode = node;
 			nj.secret = secret;
 
-			$(".currentUrl").html(
-					"<a style='color: #585858;' href='" + node.url() + "' >" + node.url() + "</a>");
-
+			$(".currentUrl", elem).html(
+					"<a style='color: #909090;' href='" + node.url() + "' >" + node.url() + "</a>");
+			
+			
+			
 			client.load({
 				node : node,
 				secret : secret,
@@ -193,6 +202,7 @@
 
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
+							$('.viewStatus', elem).html("Viewing ");
 							required.viewLoaded = true;
 							if (required.editLoaded && required.viewLoaded) {
 								callback();
@@ -240,8 +250,9 @@
 
 		nj.commitOrLoadRemote = function(callback) {
 			if (nj.loadedNode) {
+				$(".editStatus", elem).html("Synchronizing");
 				nj.edit.commitOrReload(function(wasChanged) {
-
+					$(".editStatus", elem).html("Saved");
 				});
 			}
 		}

@@ -168,30 +168,34 @@
 				secret : secret,
 				onSuccess : function(res) {
 
-					var counter = 0;
+					var required = {
+							editLoaded : false,
+							viewLoaded : false
+					};
+					
+					nj.edit.load(node.url(), secret, function() {
+						nj.valueCache = nj.edit.getValue().valueOf();
+						
+						if (nodeChangeHandler) {
+							nodeChangeHandler(node, secret);
+						}
+						required.editLoaded = true;
+						if (required.editLoaded && required.viewLoaded) {	
+							callback();
+						}
+					});
+					
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
-							counter++;
-							if (counter == 2) {
-								counter = -5;
+							required.viewLoaded = true;
+							if (required.editLoaded && required.viewLoaded) {	
 								callback();
 							}
 						},
 						onFailure : function() {
 						}
 					});
-					nj.edit.load(node.url(), secret, function() {
-						nj.valueCache = nj.edit.getValue().valueOf();
-						counter++;
-						if (counter == 2) {
-							counter = -5;
-							callback();
-							if (nodeChangeHandler) {
-								nodeChangeHandler(node, secret);
-							}
-
-						}
-					});
+					
 
 				}
 			});

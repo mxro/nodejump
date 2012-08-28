@@ -76,11 +76,11 @@
 
 				},
 				nodeChangeListener : function(client, node, secret) {
-						
+
 				},
-				viewHandler: function(client, node, secret) {
+				viewHandler : function(client, node, secret) {
 					nj.load(node, secret, function() {
-						
+
 					});
 				}
 			});
@@ -98,50 +98,55 @@
 
 			});
 
-			$(".insertLinkButton", elem).click(
-					function(evt) {
-						evt.preventDefault();
-						
-						$(".documentTitleDialog", elem).modal('show');
-						
-						$(".documentTitleDialog-cancel", elem).click(function(evt) {
-							evt.preventDefault();
-							$(".documentTitleDialog", elem).modal('hide');
-						});
-						
-						$(".documentTitleDialog-createDocument", elem).click(function(evt) {
-							evt.preventDefault();
-							
-							var title = $(".documentTitleDialog-title", elem).val();
-							
-							if (!title) {
-								alert("Please specify a title");
-								return;
-							}
-							
-							$(".documentTitleDialog", elem).modal('hide');
-							
-							nj.priv.createChildDocument(title, function(node, secret) {
-								
-								var absoluteLink = node.url();
-								var relativeLink = absoluteLink.substring(absoluteLink.lastIndexOf('/'));
-								
-								var codemirror = nj.edit.getEditor();
-								
-								codemirror.replaceRange("["+title+"](."+relativeLink+")", codemirror.getCursor());
-								
+			$(".insertLinkButton", elem).click(function(evt) {
+				evt.preventDefault();
+
+				$(".documentTitleDialog-title", elem).val("");
+
+				$(".documentTitleDialog", elem).modal('show');
+
+			});
+
+			$(".documentTitleDialog-cancel", elem).click(function(evt) {
+				evt.preventDefault();
+				$(".documentTitleDialog", elem).modal('hide');
+			});
+
+			$(".documentTitleDialog-createDocument", elem)
+					.click(
+							function(evt) {
+								evt.preventDefault();
+
+								var title = $(".documentTitleDialog-title",
+										elem).val();
+
+								if (!title) {
+									alert("Please specify a title");
+									return;
+								}
+
+								$(".documentTitleDialog", elem).modal('hide');
+
+								nj.priv.createChildDocument(title, function(
+										node, secret) {
+
+									var absoluteLink = node.url();
+									var relativeLink = absoluteLink
+											.substring(absoluteLink
+													.lastIndexOf('/'));
+
+									var codemirror = nj.edit.getEditor();
+
+									codemirror.replaceRange("[" + title + "](."
+											+ relativeLink + ")", codemirror
+											.getCursor());
+
+								});
+
 							});
-
-						});
-						
-						
-						
-
-					});
 
 		};
 
-		
 		nj.initForAnonymous = function(onSuccess) {
 
 			nj.priv.createAnonymousDocument(function(node, secret) {
@@ -160,42 +165,42 @@
 
 			nj.loadedNode = node;
 			nj.secret = secret;
-			
-			$(".currentUrl").html("<a href='"+node.url()+"' >"+node.url()+"</a>");
-			
+
+			$(".currentUrl").html(
+					"<a href='" + node.url() + "' >" + node.url() + "</a>");
+
 			client.load({
 				node : node,
 				secret : secret,
 				onSuccess : function(res) {
 
 					var required = {
-							editLoaded : false,
-							viewLoaded : false
+						editLoaded : false,
+						viewLoaded : false
 					};
-					
+
 					nj.edit.load(node.url(), secret, function() {
 						nj.valueCache = nj.edit.getValue().valueOf();
-						
+
 						if (nodeChangeHandler) {
 							nodeChangeHandler(node, secret);
 						}
 						required.editLoaded = true;
-						if (required.editLoaded && required.viewLoaded) {	
+						if (required.editLoaded && required.viewLoaded) {
 							callback();
 						}
 					});
-					
+
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
 							required.viewLoaded = true;
-							if (required.editLoaded && required.viewLoaded) {	
+							if (required.editLoaded && required.viewLoaded) {
 								callback();
 							}
 						},
 						onFailure : function() {
 						}
 					});
-					
 
 				}
 			});
@@ -206,12 +211,11 @@
 		 * Interpret hash code
 		 */
 		nj.readHash = function(hash, callback) {
-			if (!hash || hash===null || hash === "" || hash === "#") {
+			if (!hash || hash === null || hash === "" || hash === "#") {
 				callback(false);
 				return;
 			}
 
-			
 			var link = AJ.utils.parseAppLink(hash);
 
 			if (!link.address) {
@@ -289,31 +293,31 @@
 			if (simpleTitle.length > 25) {
 				simpleTitle = simpleTitle.substring(0, 24);
 			}
-			
+
 			client.load({
-				node: nj.loadedNode,
-				secret: nj.secret,
-				onSuccess: function(res) {
-					
+				node : nj.loadedNode,
+				secret : nj.secret,
+				onSuccess : function(res) {
+
 					var newNode = client.append({
-						node : "# "+documentTitle+"\n\n",
-						to: res.loadedNode,
-						atClosestAddress: "./" +simpleTitle
+						node : "# " + documentTitle + "\n\n",
+						to : res.loadedNode,
+						atClosestAddress : "./" + simpleTitle
 					});
-					
+
 					AJ.common.configureMarkdownNode(client, newNode);
-					
+
 					onSuccess(newNode, nj.secret);
-					
+
 				},
-				onFailure: function(ex) {
+				onFailure : function(ex) {
 					AJ.ui.notify(
 							"Unexpected error while creating child document: "
 									+ ex, "alert-error");
 				}
 			});
 		};
-		
+
 		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({
 				onSuccess : function(res) {

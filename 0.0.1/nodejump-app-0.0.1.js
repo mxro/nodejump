@@ -103,7 +103,7 @@
 		}
 
 		nj.initForUser = function(onSuccess) {
-			nj.priv.createNewUserDocument(function(node, secret)) {
+			nj.priv.createNewUserDocument(function(node, secret) {
 				nj.load(node, secret, onSuccess);
 			});
 		}

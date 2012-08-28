@@ -6,8 +6,7 @@ This document outlines the directions for the nodejump application.
 
 ## Must
 
-
-
+- fix: the auto commit and refresh background tasks are sometimes started 'too early' leading to an exception which prevents auto updates.
 
 
 ## Maybe
@@ -37,4 +36,7 @@ This document outlines the directions for the nodejump application.
  - DONE, 26/8/2012
 - 3/enh/nodejump: implement startup for logged in and anonymous users
  - will there always be one root document (or can logged in user create multiple root documents?)
- - done 28/8/2012 in 4.5<!-- one.end -->
+ - done 28/8/2012 in 4.5
+- 1/enh/nodejump: allow to parameterize with uri of node to be loaded
+ - also update hash according to the loaded node
+ - done 28/8/2012 in 1<!-- one.end -->

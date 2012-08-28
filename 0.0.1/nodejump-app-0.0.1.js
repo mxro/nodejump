@@ -167,7 +167,7 @@
 				link.secret = AJ.userNodeSecret;
 			}
 			
-			nodejump.load(client.reference(link.address), link.secret. function() {
+			nj.load(client.reference(link.address), link.secret, function() {
 				callback(true);
 			});
 		};

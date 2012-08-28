@@ -165,7 +165,7 @@
 
 		nj.load = function(node, secret, callback) {
 
-			if (!(node.url() === nj.loadedNode.url()) {
+			if (!(node.url() === nj.loadedNode.url())) {
 				$('.editStatus', elem).html("Loading");
 				$('.viewStatus', elem).html("Loading");
 			}

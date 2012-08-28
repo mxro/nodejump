@@ -76,7 +76,12 @@
 
 				},
 				nodeChangeListener : function(client, node, secret) {
-
+						
+				},
+				viewHandler: function(client, node, secret) {
+					nj.load(node, secret, function() {
+						
+					});
 				}
 			});
 

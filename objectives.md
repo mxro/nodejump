@@ -39,4 +39,6 @@ This document outlines the directions for the nodejump application.
  - done 28/8/2012 in 4.5
 - 1/enh/nodejump: allow to parameterize with uri of node to be loaded
  - also update hash according to the loaded node
- - done 28/8/2012 in 1<!-- one.end -->
+ - done 28/8/2012 in 1
+- 1/enh/nodejump: implement insert link button very basic feature (automatically inserts link to new child)
+ - done 28/8/2012 in 2<!-- one.end -->

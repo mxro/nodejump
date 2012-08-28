@@ -34,4 +34,7 @@ This document outlines the directions for the nodejump application.
 - enh: improve speed, in which Markdown preview is updated!
  - event listener for editor
  - editor seperate methods for commit to local network, commit to remote partner and load updates from remote partner
- - DONE, 26/8/2012<!-- one.end -->
+ - DONE, 26/8/2012
+- 3/enh/nodejump: implement startup for logged in and anonymous users
+ - will there always be one root document (or can logged in user create multiple root documents?)
+ - done 28/8/2012 in 4.5<!-- one.end -->

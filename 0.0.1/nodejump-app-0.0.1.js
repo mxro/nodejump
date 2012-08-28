@@ -96,7 +96,9 @@
 			$(".insertLinkButton", elem).click(function(evt) {
 				evt.preventDefault();
 				
-				edit.
+				var codemirror = edit.getEditor();
+				
+				codemirror.replaceRange("[My Link](#)", codemirror.getCursor());
 				
 			});
 

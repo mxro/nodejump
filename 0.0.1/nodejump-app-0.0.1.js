@@ -92,6 +92,13 @@
 				});
 
 			});
+			
+			$(".insertLinkButton", elem).click(function(evt) {
+				evt.preventDefault();
+				
+				edit.
+				
+			});
 
 		};
 

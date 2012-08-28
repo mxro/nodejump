@@ -80,7 +80,8 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 					<div class="row-fluid">
 						<div class="btn-toolbar">
 							<div class="btn-group">
-								<button class="insertLinkButton btn btn-inverse">Insert Link</button>
+								<button class="insertLinkButton btn btn-inverse">Insert
+									Link</button>
 								<button class="btn btn-inverse dropdown-toggle"
 									data-toggle="dropdown">
 									<span class="caret"></span>
@@ -92,7 +93,9 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 								</ul>
 
 							</div>
-							<p>Your <b>public</b> page is at: <span class="pageUrl">http://slicnet.com/yournode</span></p>
+							<p>
+								Your <b>public</b> page is at: <span class="pageUrl">http://slicnet.com/yournode</span>
+							</p>
 							<div class="btn-group">
 								<button class="btn btn-inverse">Publish</button>
 								<button class="btn btn-inverse">Share</button>
@@ -128,6 +131,30 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 							</div>
 						</div>
 					</div>
+
+					<div class="documentTitleDialog modal hide fade">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h3>Insert Link to New Document</h3>
+						</div>
+						<div class="modal-body">
+							<form>
+								<legend>Specify the title of the new document to be
+									linked here.</legend>
+								<label>Title of new document</label> <input
+									class="documentTitleDialog-title" type="text"
+									placeholder="Title ...">
+							</form>
+						</div>
+						<div class="modal-footer">
+							<a href="#" class="documentTitleDialog-cancel btn">Cancel</a> <a
+								href="#"
+								class="documentTitleDialog-createDocument btn btn-primary">Create
+								Document</a>
+						</div>
+					</div>
+
 				</div>
 
 
@@ -135,6 +162,8 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		</div>
 
 	</div>
+
+
 
 
 
@@ -172,7 +201,7 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 // 	
 </script>
 
-<script>
+	<script>
 // 
 <!-- one.embedText("https://u1.linnk.it/qc8sbw/usr/apps/ajMicroSync/docs/aj-common-0.0.1") -->
 // 

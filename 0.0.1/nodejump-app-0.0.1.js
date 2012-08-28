@@ -10,7 +10,7 @@
 		var elem = params.elem;
 		var client = params.client;
 		var nodeChangeHandler = params.nodeChangeHandler;
-		
+
 		nj.isChanged = false;
 
 		// the last loaded/ edited value.
@@ -92,18 +92,51 @@
 				});
 
 			});
-			
-			$(".insertLinkButton", elem).click(function(evt) {
-				evt.preventDefault();
-				
-				var codemirror = edit.getEditor();
-				
-				codemirror.replaceRange("[My Link](#)", codemirror.getCursor());
-				
-			});
+
+			$(".insertLinkButton", elem).click(
+					function(evt) {
+						evt.preventDefault();
+						
+						$(".documentTitleDialog", elem).modal('show');
+						
+						$(".documentTitleDialog-cancel", elem).click(function(evt) {
+							evt.preventDefault();
+							$(".documentTitleDialog", elem).modal('hide');
+						});
+						
+						$(".documentTitleDialog-createDocument", elem).click(function(evt) {
+							evt.preventDefault();
+							
+							var title = $(".documentTitleDialog-title", elem).val();
+							
+							if (!title) {
+								alert("Please specify a title");
+								return;
+							}
+							
+							$(".documentTitleDialog", elem).modal('hide');
+							
+							nj.priv.createChildDocument(title, function(node, secret) {
+								
+								var absoluteLink = node.url();
+								var relativeLink = absoluteLink.substring(absoluteLink.lastIndexOf('/'));
+								
+								var codemirror = nj.edit.getEditor();
+								
+								codemirror.replaceRange("["+documentTitle+"](."+relativeLink+")", codemirror.getCursor());
+								
+							});
+
+						});
+						
+						
+						
+
+					});
 
 		};
 
+		
 		nj.initForAnonymous = function(onSuccess) {
 
 			nj.priv.createAnonymousDocument(function(node, secret) {
@@ -117,7 +150,7 @@
 				nj.load(node, secret, onSuccess);
 			});
 		}
-		
+
 		nj.load = function(node, secret, callback) {
 
 			nj.loadedNode = node;
@@ -149,7 +182,7 @@
 							if (nodeChangeHandler) {
 								nodeChangeHandler(node, secret);
 							}
-							
+
 						}
 					});
 
@@ -163,24 +196,23 @@
 				callback(false);
 				return;
 			}
-			
+
 			var link = AJ.utils.parseAppLink(hash);
-			
+
 			if (!link.address) {
 				callback(false);
 				return;
 			}
-			
-			
+
 			if (link.secret === null) {
 				link.secret = AJ.userNodeSecret;
 			}
-			
+
 			nj.load(client.reference(link.address), link.secret, function() {
 				callback(true);
 			});
 		};
-		
+
 		nj.commitLocal = function(callback) {
 			if (nj.loadedNode) {
 				nj.edit.commitLocal(callback);
@@ -237,12 +269,42 @@
 
 		nj.priv = {};
 
+		nj.priv.createChildDocument = function(documentTitle, onSuccess) {
+			var simpleTitle = AJ.utils.getSimpleText(documentTitle);
+			if (simpleTitle.length > 25) {
+				simpleTitle = simpleTitle.substring(0, 24);
+			}
+			
+			client.load({
+				node: nj.loadedNode,
+				secret: nj.secret,
+				onSuccess: function(res) {
+					
+					var newNode = client.append({
+						node : "# "+documentTitle+"\n\n",
+						to: res.loadedNode,
+						atAddress: "./" +simpleTitle
+					});
+					
+					AJ.common.configureMarkdownNode(client, newNode);
+					
+					onSuccess(newNode, nj.secret);
+					
+				},
+				onFailure: function(ex) {
+					AJ.ui.notify(
+							"Unexpected error while creating child document: "
+									+ ex, "alert-error");
+				}
+			});
+		};
+		
 		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({
 				onSuccess : function(res) {
 
 					var rootNode = client.append({
-						node : "# Documents",
+						node : "# Documents\n\n",
 						to : res.root,
 						atAddress : "./nj"
 					});
@@ -261,22 +323,26 @@
 		};
 
 		nj.priv.createNewUserDocument = function(onSuccess) {
-			nj.priv.assertDocDbNode(function(docNode, secret) {
-				AJ.common.appendDeep({
-					client: client,
-					toNode: docNode,
-					secret: AJ.userNodeSecret,
-					nodeFactory : function() {
-						return "# Documents";
-					},
-					onSuccess : function(node, secret) {
-						onSuccess(node, secret);
-					},
-					onFailure: function(ex) {
-						AJ.ui.notify("Unexpected exception while creating new document: "+ex);
-					}
-				});
-			});
+			nj.priv
+					.assertDocDbNode(function(docNode, secret) {
+						AJ.common
+								.appendDeep({
+									client : client,
+									toNode : docNode,
+									secret : AJ.userNodeSecret,
+									nodeFactory : function() {
+										return "# Documents\n\n";
+									},
+									onSuccess : function(node, secret) {
+										onSuccess(node, secret);
+									},
+									onFailure : function(ex) {
+										AJ.ui
+												.notify("Unexpected exception while creating new document: "
+														+ ex);
+									}
+								});
+					});
 
 		};
 
@@ -324,7 +390,9 @@
 
 				},
 				onFailure : function(ex) {
-
+					AJ.ui.notify(
+							"Unexpected exception while creating application node: "
+									+ ex, "alert-error");
 				}
 			});
 

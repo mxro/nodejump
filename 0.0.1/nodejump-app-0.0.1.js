@@ -167,7 +167,7 @@
 			nj.secret = secret;
 
 			$(".currentUrl").html(
-					"<a href='" + node.url() + "' >" + node.url() + "</a>");
+					"<a style='color: #585858;' href='" + node.url() + "' >" + node.url() + "</a>");
 
 			client.load({
 				node : node,

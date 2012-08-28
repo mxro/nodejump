@@ -165,9 +165,10 @@
 
 		nj.load = function(node, secret, callback) {
 
-			if (!(node.url() === nj.loadedNode.url())) {
+			if (nj.loadedNode && !(node.url() === nj.loadedNode.url())) {
 				$('.editStatus', elem).html("Loading");
 				$('.viewStatus', elem).html("Loading");
+				$('.shareComponent', elem).hide();
 			}
 			
 			nj.loadedNode = node;
@@ -202,7 +203,8 @@
 
 					nj.view.load(nj.loadedNode.url(), secret, {
 						onSuccess : function() {
-							$('.viewStatus', elem).html("Viewing ");
+							$('.viewStatus', elem).html("Viewing");
+							$('.shareComponent', elem).fadeIn('fast');
 							required.viewLoaded = true;
 							if (required.editLoaded && required.viewLoaded) {
 								callback();

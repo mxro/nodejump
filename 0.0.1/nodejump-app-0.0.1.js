@@ -204,9 +204,6 @@
 				return;
 			}
 
-			if () {
-				callback(fa)
-			}
 			
 			var link = AJ.utils.parseAppLink(hash);
 

@@ -34,7 +34,6 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 }
 
 .CodeMirror {
-	
 	font-size: 12pt;
 }
 
@@ -138,7 +137,7 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 								</div> -->
 								<div class="row-fluid">
 									<div class="viewComponent">
-										<div class="viewContent" ></div>
+										<div class="viewContent"></div>
 										<div class="viewChildren row-fluid">
 
 											<div class="span12">
@@ -328,10 +327,18 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 		
 		nodejump.readHash(window.location.hash, function(hadHash) {
 			if (!hadHash) {
-				nodejump.initForUser(function() {
-					nodejump.startAutoCommit();
-					nodejump.startAutoRefresh();
-				} );
+				
+				if (AJ.userNodeUri) {
+						nodejump.initForUser(function() {
+						nodejump.startAutoCommit();
+						nodejump.startAutoRefresh();
+					} );
+				} else {
+					nodejump.initForAnonymous(function() {
+						nodejump.startAutoCommit();
+						nodejump.startAutoRefresh();
+					});
+				}
 				return;
 			}
 			
@@ -339,9 +346,7 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 			nodejump.startAutoRefresh();
 		});
 		
-		
-		
-		
+			
 		
 		$(window).hashchange( function(){
 			if (!lastInjectedHashValue || !(window.location.hash.valueOf() === lastInjectedHashValue.valueOf())) {
@@ -384,10 +389,11 @@ a.disabled-link,a.disabled-link:visited,a.disabled-link:active,a.disabled-link:h
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
 		_gaq.push([ '_setAccount', 'UA-34013716-1' ]);
-		_gaq.push([ '_setDomainName', 'appjangle.com' ]);
+		_gaq.push([ '_setDomainName', 'nodejump.com' ]);
 		_gaq.push([ '_setAllowLinker', true ]);
 		_gaq.push([ '_trackPageview' ]);
 
+		
 		(function() {
 			var ga = document.createElement('script');
 			ga.type = 'text/javascript';

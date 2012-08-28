@@ -198,6 +198,9 @@
 
 		};
 
+		/**
+		 * Interpret hash code
+		 */
 		nj.readHash = function(hash, callback) {
 			if (!hash || hash===null || hash === "" || hash === "#") {
 				callback(false);

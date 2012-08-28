@@ -123,7 +123,7 @@
 								
 								var codemirror = nj.edit.getEditor();
 								
-								codemirror.replaceRange("["+documentTitle+"](."+relativeLink+")", codemirror.getCursor());
+								codemirror.replaceRange("["+title+"](."+relativeLink+")", codemirror.getCursor());
 								
 							});
 
@@ -283,7 +283,7 @@
 					var newNode = client.append({
 						node : "# "+documentTitle+"\n\n",
 						to: res.loadedNode,
-						atAddress: "./" +simpleTitle
+						atClosestAddress: "./" +simpleTitle
 					});
 					
 					AJ.common.configureMarkdownNode(client, newNode);

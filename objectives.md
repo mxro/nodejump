@@ -41,4 +41,6 @@ This document outlines the directions for the nodejump application.
  - also update hash according to the loaded node
  - done 28/8/2012 in 1
 - 1/enh/nodejump: implement insert link button very basic feature (automatically inserts link to new child)
- - done 28/8/2012 in 2<!-- one.end -->
+ - done 28/8/2012 in 2
+- 2/enh/nodejump: manage clicks on links in view to load new node in nodejump
+ - done 28/8/2012 in 1<!-- one.end -->

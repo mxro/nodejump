@@ -160,7 +160,9 @@
 
 			nj.loadedNode = node;
 			nj.secret = secret;
-
+			
+			$(".currentUrl").html("<a href='"+node.url()+"' >"+node.url()+"</a>");
+			
 			client.load({
 				node : node,
 				secret : secret,
@@ -197,11 +199,15 @@
 		};
 
 		nj.readHash = function(hash, callback) {
-			if (!hash) {
+			if (!hash || hash===null || hash === "" || hash === "#") {
 				callback(false);
 				return;
 			}
 
+			if () {
+				callback(fa)
+			}
+			
 			var link = AJ.utils.parseAppLink(hash);
 
 			if (!link.address) {

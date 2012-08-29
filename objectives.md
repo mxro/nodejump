@@ -6,8 +6,7 @@ This document outlines the directions for the nodejump application.
 
 ## Must
 
-
-
+- fix: the auto commit and refresh background tasks are sometimes started 'too early' leading to an exception which prevents auto updates.
 
 
 ## Maybe
@@ -34,4 +33,31 @@ This document outlines the directions for the nodejump application.
 - enh: improve speed, in which Markdown preview is updated!
  - event listener for editor
  - editor seperate methods for commit to local network, commit to remote partner and load updates from remote partner
- - DONE, 26/8/2012<!-- one.end -->
+ - DONE, 26/8/2012
+- 3/enh/nodejump: implement startup for logged in and anonymous users
+ - will there always be one root document (or can logged in user create multiple root documents?)
+ - done 28/8/2012 in 4.5
+- 1/enh/nodejump: allow to parameterize with uri of node to be loaded
+ - also update hash according to the loaded node
+ - done 28/8/2012 in 1
+- 1/enh/nodejump: implement insert link button very basic feature (automatically inserts link to new child)
+ - done 28/8/2012 in 2
+- 2/enh/nodejump: manage clicks on links in view to load new node in nodejump
+ - done 28/8/2012 in 1
+- 2/enh/nodejump: various small enhancements
+ - improve speed in which edit component is loaded
+  - fixed
+ - fix ui that window only closes after changes have been committed
+  - attempted to fix with jquery onunload - but might not work in all circumstances
+ - fix ui that when link inserted again title from previous link is still in title field
+  - fixed
+ - fix that hash value does not appear to be updated correctly
+  - fixed
+ - fix ui, add where it shows which document is open (maybe as short url?)
+  - fixed
+ - fix ui, that it shows when a document is saved
+  - fixed
+ - 29/8/2012 DONE in 2
+- 1/enh/nodejump: make the loading process more visually appealing
+ - eg both view and editor show loading bar before actual content is shown
+ - DONE 29/8/2012 -> added status labels<!-- one.end -->

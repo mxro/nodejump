@@ -60,4 +60,7 @@ This document outlines the directions for the nodejump application.
  - 29/8/2012 DONE in 2
 - 1/enh/nodejump: make the loading process more visually appealing
  - eg both view and editor show loading bar before actual content is shown
- - DONE 29/8/2012 -> added status labels<!-- one.end -->
+ - DONE 29/8/2012 -> added status labels
+- 3+/enh/nodejump: build a share-ui common, which can also be used by edit and view
+ - as modal dialog -- problematic for mobile devices ... built flexible enough that it will also work on mobile devices.
+ - 29/8/2012 done in 5<!-- one.end -->

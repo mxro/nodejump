@@ -74,4 +74,11 @@ For 0.0.2:
  - DONE 29/8/2012 -> added status labels
 - 3+/enh/nodejump: build a share-ui common, which can also be used by edit and view
  - as modal dialog -- problematic for mobile devices ... built flexible enough that it will also work on mobile devices.
- - 29/8/2012 done in 5<!-- one.end -->
+ - 29/8/2012 done in 5
+- 1/enh/nodejump: make insert link dialog mobile friendly.
+ - use bootstrap-utils
+ - finished implementation thus far but cannot test due to bug in textsync
+ - DONE 30/8/2012 in 2
+- 1/enh/nodejump/edit: change api of share module to allow edit links to point to nodejump docs.
+ - also done for view links
+ - DONE 30/8/2012 in 1<!-- one.end -->

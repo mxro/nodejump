@@ -51,7 +51,7 @@
 					return "http://nodejump.com/#"+url+"&"+token;
 				},
 				viewLinkFactory : function(url, token) {
-					
+					return "http://nodejump.com/#"+url+"&"+token+"&feature=readOnly";
 				}
 			});
 

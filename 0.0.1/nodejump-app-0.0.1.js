@@ -107,7 +107,7 @@
 			$(".insertLinkButton", elem).click(function(evt) {
 				evt.preventDefault();
 
-				$(".documentTitleDialog-title", elem).val("");
+				
 
 				$(".documentTitleDialog", elem).modal('show');
 				
@@ -119,10 +119,7 @@
 				nj.share.show(nj.loadedNode);
 			});
 			
-			$(".documentTitleDialog-cancel", elem).click(function(evt) {
-				evt.preventDefault();
-				$(".documentTitleDialog", elem).modal('hide');
-			});
+			
 
 			$(".documentTitleDialog-createDocument", elem)
 					.click(

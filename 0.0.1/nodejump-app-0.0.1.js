@@ -24,6 +24,8 @@
 		nj.edit = null;
 		// view component
 		nj.view = null;
+		// share component
+		nj.share = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
 		// timer for auto-commit
@@ -40,6 +42,8 @@
 						return converter.makeHtml(input);
 					}));
 
+			nj.share = $.initAjShare($('.shareDialog', elem), client);
+			
 			nj.edit = $.initAjEdit($(".editorContent", elem), client);
 
 			nj.edit.setEditorFactory(function() {
@@ -109,6 +113,12 @@
 
 			});
 
+			$('.shareButton', elem).click(function(evt) {
+				evt.preventDefault();
+				
+				nj.share.show(nj.loadedNode);
+			});
+			
 			$(".documentTitleDialog-cancel", elem).click(function(evt) {
 				evt.preventDefault();
 				$(".documentTitleDialog", elem).modal('hide');

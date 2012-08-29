@@ -26,6 +26,8 @@
 		nj.view = null;
 		// share component
 		nj.share = null;
+		
+		nj.insertLinkDialog = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
 		// timer for auto-commit
@@ -43,6 +45,8 @@
 					}));
 
 			nj.share = $.initAjShare($('.shareDialog', elem), client);
+			
+			nj.insertLinkDialog = $.initNewLinkDialog($('.insertLinkDialog', elem), client);
 			
 			nj.edit = $.initAjEdit($(".editorContent", elem), client);
 
@@ -107,9 +111,22 @@
 			$(".insertLinkButton", elem).click(function(evt) {
 				evt.preventDefault();
 
-				
+				nj.insertLinkDialog.show({
+					node: nj.loadedNode,
+					secret : nj.secret,
+					onLinkCreated : function(res) {
+						var codemirror = nj.edit.getEditor();
 
-				$(".documentTitleDialog", elem).modal('show');
+						codemirror.replaceRange("[" + res.title + "](."
+								+ res.relativeLink + ")", codemirror
+								.getCursor());
+					},
+					onCancel : function() {
+						
+					}
+				});
+
+				
 				
 			});
 
@@ -121,38 +138,7 @@
 			
 			
 
-			$(".documentTitleDialog-createDocument", elem)
-					.click(
-							function(evt) {
-								evt.preventDefault();
-
-								var title = $(".documentTitleDialog-title",
-										elem).val();
-
-								if (!title) {
-									alert("Please specify a title");
-									return;
-								}
-
-								$(".documentTitleDialog", elem).modal('hide');
-
-								nj.priv.createChildDocument(title, function(
-										node, secret) {
-
-									var absoluteLink = node.url();
-									var relativeLink = absoluteLink
-											.substring(absoluteLink
-													.lastIndexOf('/'));
-
-									var codemirror = nj.edit.getEditor();
-
-									codemirror.replaceRange("[" + title + "](."
-											+ relativeLink + ")", codemirror
-											.getCursor());
-
-								});
-
-							});
+			
 
 		};
 
@@ -309,35 +295,7 @@
 
 		nj.priv = {};
 
-		nj.priv.createChildDocument = function(documentTitle, onSuccess) {
-			var simpleTitle = AJ.utils.getSimpleText(documentTitle);
-			if (simpleTitle.length > 25) {
-				simpleTitle = simpleTitle.substring(0, 24);
-			}
-
-			client.load({
-				node : nj.loadedNode,
-				secret : nj.secret,
-				onSuccess : function(res) {
-
-					var newNode = client.append({
-						node : "# " + documentTitle + "\n\n",
-						to : res.loadedNode,
-						atClosestAddress : "./" + simpleTitle
-					});
-
-					AJ.common.configureMarkdownNode(client, newNode);
-
-					onSuccess(newNode, nj.secret);
-
-				},
-				onFailure : function(ex) {
-					AJ.ui.notify(
-							"Unexpected error while creating child document: "
-									+ ex, "alert-error");
-				}
-			});
-		};
+		
 
 		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({

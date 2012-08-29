@@ -110,7 +110,7 @@
 				$(".documentTitleDialog-title", elem).val("");
 
 				$(".documentTitleDialog", elem).modal('show');
-
+				
 			});
 
 			$('.shareButton', elem).click(function(evt) {

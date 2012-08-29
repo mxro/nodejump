@@ -47,16 +47,20 @@
 
 						nld.hide();
 
+						
+						
 						AJ.common.createMarkdownChildDocument({
 							client : client,
 							node : nld.node,
 							secret : nld.secret,
 							documentTitle : title,
 							onSuccess : function(node, secret) {
-
-								onLinkCreated({
+								
+								var absoluteLink = node.url();
+								
+								nld.onLinkCreated({
 									title : title,
-									absoluteLink : node.url(),
+									absoluteLink : absoluteLink,
 									relativeLink : absoluteLink
 											.substring(absoluteLink
 													.lastIndexOf('/'))

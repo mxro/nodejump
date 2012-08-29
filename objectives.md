@@ -8,8 +8,19 @@ This document outlines the directions for the nodejump application.
 
 - fix: the auto commit and refresh background tasks are sometimes started 'too early' leading to an exception which prevents auto updates.
 
+For 0.0.2:
+
+- 3/enh/nodejump: allow to link to other resources
+ - external link
+ - other page
+ 
+- 3/enh/nodejump: allow to embed pictures
+ - integrate with 3rd party picture upload service?
+
 
 ## Maybe
+
+- 1/enh/nodejump: check if there is a way for nodejump to align the first line of editor and view (or at least assure that the currently selected link in the editor is shown 
 
 - enh: enable 'templates', which allow to build documents based on one or a cluster of connected documents
  - these can include applications (linked with onexite)

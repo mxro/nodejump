@@ -26,7 +26,7 @@
 		nj.view = null;
 		// share component
 		nj.share = null;
-		
+
 		nj.insertLinkDialog = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
@@ -44,10 +44,20 @@
 						return converter.makeHtml(input);
 					}));
 
-			nj.share = $.initAjShare($('.shareDialog', elem), client);
-			
-			nj.insertLinkDialog = $.initNewLinkDialog($('.insertLinkDialog', elem), client);
-			
+			nj.share = $.initAjShareDialog({
+				elem : $('.shareDialog', elem),
+				client : client,
+				editLinkFactory : function(url, token) {
+					return "http://nodejump.com/#"+url+"&"+token;
+				},
+				viewLinkFactory : function(url, token) {
+					
+				}
+			});
+
+			nj.insertLinkDialog = $.initNewLinkDialog($('.insertLinkDialog',
+					elem), client);
+
 			nj.edit = $.initAjEdit($(".editorContent", elem), client);
 
 			nj.edit.setEditorFactory(function() {
@@ -108,37 +118,32 @@
 
 			});
 
-			$(".insertLinkButton", elem).click(function(evt) {
-				evt.preventDefault();
+			$(".insertLinkButton", elem).click(
+					function(evt) {
+						evt.preventDefault();
 
-				nj.insertLinkDialog.show({
-					node: nj.loadedNode,
-					secret : nj.secret,
-					onLinkCreated : function(res) {
-						var codemirror = nj.edit.getEditor();
+						nj.insertLinkDialog.show({
+							node : nj.loadedNode,
+							secret : nj.secret,
+							onLinkCreated : function(res) {
+								var codemirror = nj.edit.getEditor();
 
-						codemirror.replaceRange("[" + res.title + "](."
-								+ res.relativeLink + ")", codemirror
-								.getCursor());
-					},
-					onCancel : function() {
-						
-					}
-				});
+								codemirror.replaceRange("[" + res.title + "](."
+										+ res.relativeLink + ")", codemirror
+										.getCursor());
+							},
+							onCancel : function() {
 
-				
-				
-			});
+							}
+						});
+
+					});
 
 			$('.shareButton', elem).click(function(evt) {
 				evt.preventDefault();
-				
+
 				nj.share.show(nj.loadedNode);
 			});
-			
-			
-
-			
 
 		};
 
@@ -163,15 +168,14 @@
 				$('.viewStatus', elem).html("Loading");
 				$('.shareComponent', elem).hide();
 			}
-			
+
 			nj.loadedNode = node;
 			nj.secret = secret;
 
 			$(".currentUrl", elem).html(
-					"<a style='color: #909090;' href='" + node.url() + "' >" + node.url() + "</a>");
-			
-			
-			
+					"<a style='color: #909090;' href='" + node.url() + "' >"
+							+ node.url() + "</a>");
+
 			client.load({
 				node : node,
 				secret : secret,
@@ -265,7 +269,7 @@
 		nj.stopAutoCommit = function() {
 			clearInterval(nj.committer);
 			nj.committer = null;
-			
+
 			nj.commitLocal(function() {
 
 			});
@@ -294,8 +298,6 @@
 		};
 
 		nj.priv = {};
-
-		
 
 		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({

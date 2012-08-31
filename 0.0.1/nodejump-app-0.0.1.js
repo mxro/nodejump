@@ -27,6 +27,8 @@
 		// share component
 		nj.share = null;
 
+		nj.isAnonymous = false;
+		
 		nj.insertLinkDialog = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
@@ -185,7 +187,10 @@
 
 		nj.initForAnonymous = function(onSuccess) {
 
+			nj.isAnonymous = true;
+			
 			nj.priv.createAnonymousDocument(function(node, secret) {
+				
 				nj.load(node, secret, onSuccess);
 			});
 
@@ -226,7 +231,7 @@
 						nj.valueCache = nj.edit.getValue().valueOf();
 
 						if (nodeChangeHandler) {
-							nodeChangeHandler(node, secret);
+							nodeChangeHandler(nj, node, secret);
 						}
 						required.editLoaded = true;
 						if (required.editLoaded && required.viewLoaded) {
@@ -333,6 +338,10 @@
 			nj.monitor = null;
 		};
 
+		nj.isAnonymousUser = function() {
+			return nj.isAnonymous;
+		};
+		
 		nj.priv = {};
 
 		nj.priv.createAndInsertChildDocument = function(title, replaceStart,
@@ -481,7 +490,9 @@
 			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
 			startAutoRefresh : nj.startAutoRefresh,
-			stopAutoRefresh : nj.stopAutoRefresh
+			stopAutoRefresh : nj.stopAutoRefresh,
+			isAnonymousUser : nj.isAnonymousUser
+			}
 		};
 	};
 

@@ -172,7 +172,7 @@ html,body {
 															style="color: #E0E0E0;"> <a href="#"></a>
 														</span></td>
 														<td><i class="shareComponent icon-arrow-right"
-															style="display: none; opacity: 0.3; filter: alpha(opacity =                         30);"></i></td>
+															style="display: none; opacity: 0.3; filter: alpha(opacity =                           30);"></i></td>
 														<td><a class="shareComponent shareButton" href="#"
 															style="display: none; color: #909090;">Share</a></td>
 													</tr>
@@ -279,7 +279,7 @@ html,body {
 // 	
 </script>
 
-<script>
+	<script>
 // 
 <!-- one.embedText("https://u1.linnk.it/qc8sbw/usr/apps/textsync/docs/js-toolbox-0.0.1") -->
 // 
@@ -365,7 +365,7 @@ html,body {
 // 
 </script>
 
-<script>
+	<script>
 // 
 <!-- one.embedText("https://u1.linnk.it/qc8sbw/usr/apps/textsync/docs/nodejump-helpbar-js-0.0.1") -->
 // 
@@ -388,8 +388,12 @@ html,body {
 		var nodejump = $.initNodeJumpApp({
 			elem: $("#nodejumpapp"),
 			client: client,
-			nodeChangeHandler: function(node, secret) {
-				window.location.hash = "#"+node.url();
+			nodeChangeHandler: function(nj, node, secret) {
+				if (!nj.isAnonymousUser()) {
+					window.location.hash = "#"+node.url();
+				} else {
+					window.location.hash = "#"+node.url()+"&"+secret;
+				}
 				lastInjectedHashValue = window.location.hash;
 			}
 		});

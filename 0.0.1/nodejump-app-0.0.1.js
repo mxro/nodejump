@@ -134,7 +134,7 @@
 								
 						if (somethingSelected && selection.length < 20) {
 							nj.priv.createAndInsertChildDocument(
-									codemirror.getSelection, codemirror
+									codemirror.getSelection(), codemirror
 											.getCursor(false), codemirror
 											.getCursor(true));
 							return;

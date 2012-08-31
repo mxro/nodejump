@@ -211,7 +211,9 @@
 			}
 
 			nj.loadedNode = node;
-			nj.secret = secret;
+			if (secret) {
+				nj.secret = secret;
+			}
 
 			$(".currentUrl", elem).html(
 					"<a style='color: #909090;' href='" + node.url() + "' >"
@@ -231,7 +233,14 @@
 						nj.valueCache = nj.edit.getValue().valueOf();
 
 						if (nodeChangeHandler) {
-							nodeChangeHandler(nj, node, secret);
+							var safeSecret = secret;
+							if (!safeSecret) {
+								safeSecret = nj.secret;
+							}
+							if (!safeSecret) {
+								safeSecret = AJ.userNodeSecret;
+							}
+							nodeChangeHandler(nj, node, safeSecret);
 						}
 						required.editLoaded = true;
 						if (required.editLoaded && required.viewLoaded) {

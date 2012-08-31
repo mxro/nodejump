@@ -48,10 +48,11 @@
 				elem : $('.shareDialog', elem),
 				client : client,
 				editLinkFactory : function(url, token) {
-					return "http://nodejump.com/#"+url+"&"+token;
+					return "http://nodejump.com/#" + url + "&" + token;
 				},
 				viewLinkFactory : function(url, token) {
-					return "http://nodejump.com/#"+url+"&"+token+"&feature=readOnly";
+					return "http://nodejump.com/#" + url + "&" + token
+							+ "&feature=readOnly";
 				}
 			});
 
@@ -121,27 +122,32 @@
 			$(".insertLinkButton", elem).click(
 					function(evt) {
 						evt.preventDefault();
-						
+
 						var codemirror = nj.edit.getEditor();
-						
-						if (codemirror.getSelection() && codemirror.getSelection().length > 0) {
+
+						// if something is selected, use selection as title of
+						// doc to be created
+						if (codemirror.getSelection()
+								&& codemirror.getSelection().length > 0) {
 							AJ.common.createMarkdownChildDocument({
 								client : client,
 								node : nj.loadedNode,
 								secret : nj.secret,
 								documentTitle : codemirror.getSelection(),
 								onSuccess : function(node, secret) {
-									
-									var absoluteLink = node.url();
-									
-									var relativeLink = absoluteLink.substring(absoluteLink
-											.lastIndexOf('/');
-									
-									codemirror.replaceRange("[" + res.title + "](."
-											+ res.relativeLink + ")", codemirror
-											.getCursor(), codemirror.getCursor(true), codemirror.getCursor(false));
 
-									});
+									var absoluteLink = node.url();
+
+									var relativeLink = absoluteLink
+											.substring(absoluteLink
+													.lastIndexOf('/'));
+
+									codemirror.replaceRange("["
+											+ codemirror.getSelection() + "](."
+											+ relativeLink + ")", codemirror
+											.getCursor(), codemirror
+											.getCursor(true), codemirror
+											.getCursor(false));
 
 								},
 								onFailure : function(ex) {
@@ -149,12 +155,13 @@
 											"Unexpected error while creating child document: "
 													+ ex, "alert-error");
 								}
+
 							});
-							
+
 							return;
-						} 
-						
-						
+						}
+
+						// if nothing is selected, ask user for document title.
 						nj.insertLinkDialog.show({
 							node : nj.loadedNode,
 							secret : nj.secret,

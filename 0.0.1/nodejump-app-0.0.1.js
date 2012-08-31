@@ -125,37 +125,34 @@
 
 						var codemirror = nj.edit.getEditor();
 
-						// if something is selected, use selection as title of
-						// doc to be created
-						if (codemirror.getSelection()
-								&& codemirror.getSelection().length > 0) {
-							AJ.common.createMarkdownChildDocument({
-								client : client,
-								node : nj.loadedNode,
-								secret : nj.secret,
-								documentTitle : codemirror.getSelection(),
-								onSuccess : function(node, secret) {
+						var title = null;
 
-									var absoluteLink = node.url();
+						var selection = codemirror.getSelection();
 
-									var relativeLink = absoluteLink
-											.substring(absoluteLink
-													.lastIndexOf('/'));
-
-									codemirror.replaceRange("["
-											+ codemirror.getSelection() + "](."
-											+ relativeLink + ")", codemirror
+						var somethingSelected = selection
+								&& selection.length > 0;
+								
+						if (somethingSelected && selection.length < 20) {
+							nj.priv.createAndInsertChildDocument(
+									codemirror.getSelection, codemirror
 											.getCursor(false), codemirror
 											.getCursor(true));
+							return;
+						}
 
-								},
-								onFailure : function(ex) {
-									AJ.ui.notify(
-											"Unexpected error while creating child document: "
-													+ ex, "alert-error");
-								}
+						var inWord = AJ.utils.inWord(codemirror
+								.indexFromPos(codemirror.getCursor()),
+								codemirror.getValue());
 
-							});
+						if (inWord) {
+
+							var exWord = AJ.utils.extractWord(codemirror
+									.indexFromPos(codemirror.getCursor()),
+									codemirror.getValue());
+
+							nj.priv.createAndInsertChildDocument(exWord.word,
+									codemirror.posFromIndex(exWord.startPos),
+									codemirror.posFromIndex(exWord.endPos));
 
 							return;
 						}
@@ -337,6 +334,36 @@
 		};
 
 		nj.priv = {};
+
+		nj.priv.createAndInsertChildDocument = function(title, replaceStart,
+				replaceEnd) {
+			title = AJ.utils.getSimpleText(title);
+			AJ.common.createMarkdownChildDocument({
+				client : client,
+				node : nj.loadedNode,
+				secret : nj.secret,
+				documentTitle : title,
+				onSuccess : function(node, secret) {
+
+					var codemirror = nj.edit.getEditor();
+
+					var absoluteLink = node.url();
+
+					var relativeLink = absoluteLink.substring(absoluteLink
+							.lastIndexOf('/'));
+
+					codemirror.replaceRange("[" + title + "](." + relativeLink
+							+ ")", replaceStart, replaceEnd);
+
+				},
+				onFailure : function(ex) {
+					AJ.ui.notify(
+							"Unexpected error while creating child document: "
+									+ ex, "alert-error");
+				}
+
+			});
+		};
 
 		nj.priv.createAnonymousDocument = function(onSuccess) {
 			client.seed({

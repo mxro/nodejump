@@ -28,7 +28,7 @@
 		nj.share = null;
 
 		nj.isAnonymous = false;
-		
+
 		nj.insertLinkDialog = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
@@ -133,11 +133,11 @@
 
 						var somethingSelected = selection
 								&& selection.length > 0;
-								
+
 						if (somethingSelected && selection.length < 20) {
-							nj.priv.createAndInsertChildDocument(
-									codemirror.getSelection(), codemirror
-											.getCursor(true), codemirror
+							nj.priv.createAndInsertChildDocument(codemirror
+									.getSelection(),
+									codemirror.getCursor(true), codemirror
 											.getCursor(false));
 							return;
 						}
@@ -188,19 +188,19 @@
 		nj.initForAnonymous = function(onSuccess) {
 
 			nj.isAnonymous = true;
-			
+
 			nj.priv.createAnonymousDocument(function(node, secret) {
-				
+
 				nj.load(node, secret, onSuccess);
 			});
 
-		}
+		};
 
 		nj.initForUser = function(onSuccess) {
 			nj.priv.createNewUserDocument(function(node, secret) {
 				nj.load(node, secret, onSuccess);
 			});
-		}
+		};
 
 		nj.load = function(node, secret, callback) {
 
@@ -277,6 +277,10 @@
 				link.secret = AJ.userNodeSecret;
 			}
 
+			if (!AJ.userNodeUri) {
+				nj.isAnonymous = true;
+			}
+
 			nj.load(client.reference(link.address), link.secret, function() {
 				callback(true);
 			});
@@ -295,11 +299,13 @@
 					$(".editStatus", elem).html("Saved");
 				});
 			}
-		}
+		};
 
 		nj.startAutoCommit = function() {
-			if (nj.committer)
+			if (nj.committer) {
 				return;
+			}
+
 			nj.committer = setInterval(function() {
 				nj.commitLocal(function() {
 
@@ -317,8 +323,9 @@
 		};
 
 		nj.startAutoRefresh = function() {
-			if (nj.monitor)
+			if (nj.monitor) {
 				return;
+			}
 			nj.monitor = setInterval(function() {
 				nj.commitOrLoadRemote(function() {
 
@@ -341,12 +348,12 @@
 		nj.isAnonymousUser = function() {
 			return nj.isAnonymous;
 		};
-		
+
 		nj.priv = {};
 
 		nj.priv.createAndInsertChildDocument = function(title, replaceStart,
 				replaceEnd) {
-			
+
 			var savetitle = AJ.utils.getSimpleText(title);
 			AJ.common.createMarkdownChildDocument({
 				client : client,
@@ -386,14 +393,14 @@
 					});
 
 					AJ.common.configureMarkdownNode(client, rootNode);
-					
+
 					var newToken = client.newPublicReadToken();
 
 					client.append({
 						node : newToken,
 						to : rootNode
 					});
-					
+
 					onSuccess(rootNode, res.secret);
 
 				},
@@ -492,7 +499,7 @@
 			startAutoRefresh : nj.startAutoRefresh,
 			stopAutoRefresh : nj.stopAutoRefresh,
 			isAnonymousUser : nj.isAnonymousUser
-			}
+
 		};
 	};
 

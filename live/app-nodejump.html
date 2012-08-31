@@ -405,9 +405,9 @@ html,body {
 				
 				if (AJ.userNodeUri) {
 						nodejump.initForUser(function() {
-						nodejump.startAutoCommit();
-						nodejump.startAutoRefresh();
-					} );
+							nodejump.startAutoCommit();
+							nodejump.startAutoRefresh();
+						} );
 				} else {
 					nodejump.initForAnonymous(function() {
 						nodejump.startAutoCommit();

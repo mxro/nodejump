@@ -1,3 +1,265 @@
 <!-- one.upload https://u1.linnk.it/qc8sbw/usr/apps/textsync/docs/nodejump-helpbar-html-0.0.1 -->
 
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tabbable">
+
+				<div class="hidden-phone">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#help-tab1" class="noHelpButton"
+							data-toggle="tab">Hide Help</a></li>
+						<li><a href="#help-formatting-tab"
+							class="formattingReferenceButton" data-toggle="tab">Formatting</a></li>
+						<li><a href="#help-linking-and-navigation-tab"
+							class="linkingAndNavigationReferenceButton" data-toggle="tab">Linking
+								and Navigation</a></li>
+						<li><a href="#help-sharing-tab"
+							class="sharingReferenceButton" data-toggle="tab">Sharing</a></li>
+					</ul>
+				</div>
+
+
+				<div class="phoneHelpMenu visible-phone">
+					<div class="btn-group">
+						<a class="btn noHelpButton hideHelpButton" data-toggle="tab"
+							href="#help-tab1" style="display: none;"> Hide Help </a> <a
+							class="btn formattingReferenceButton" data-toggle="tab"
+							href="#help-formatting-tab"> Formatting </a> <a
+							class="btn linkingAndNavigationReferenceButton" data-toggle="tab"
+							href="#help-linking-and-navigation-tab"> Linking/Nav </a> <a
+							class="btn sharingReferenceButton" data-toggle="tab"
+							href="#help-sharing-tab"> Sharing </a>
+
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tab-content">
+				<div class="tab-pane active" id="help-tab1"></div>
+
+				<div class="tab-pane" id="help-formatting-tab">
+					<div class="container">
+						<div class="row">
+
+							<div class="span6">
+								<h4>Basic Formatting</h4>
+								<p>
+									You can use a number of special characters such as
+									<code>#</code>
+									,
+									<code>*</code>
+									and
+									<code>[]</code>
+									to add formatting to your documents.
+								</p>
+								<p>
+									The <span class="hidden-phone">list to the right <i
+										class="icon-arrow-right"></i></span> <span class="visible-phone">list
+										below</span> shows examples of things you can write in the editor and
+									how they will be formatted in the preview and for deployed web
+									pages.
+								</p>
+								<p>
+									For more infos, check the <a
+										href="http://daringfireball.net/projects/markdown/basics">Markdown
+										Documentation</a>
+								</p>
+								<h4>Advanced Formatting</h4>
+								<p>For more formatting options, you can also add arbitrary
+									HTML to your documents.</p>
+								<p>
+									In particular, you can utilize the powerful formatting/layout
+									options provided by <a
+										href="http://twitter.github.com/bootstrap/base-css.html">Twitter
+										Bootstrap</a>.
+								</p>
+								<p>For instance:</p>
+								<table class="table table-condensed table-hover table-bordered">
+									<tr>
+										<td>You Write:</td>
+										<td><code>All Good &lt;i
+												class=&quot;icon-thumbs-up&quot;&gt;&lt;/i&gt;</code></td>
+									</tr>
+									<tr>
+										<td>Result:</td>
+										<td>All Good <i class="icon-thumbs-up"></i></td>
+									</tr>
+								</table>
+
+							</div>
+
+							<div class="span6">
+								<table class="table table-condensed table-hover table-bordered">
+									<tr>
+										<th>You Write</th>
+										<th>Result</th>
+									</tr>
+									<tr>
+										<td><code># Big Header</code></td>
+										<td><span style="font-size: 110%"><b>Big
+													Header</b></span></td>
+									</tr>
+									<tr>
+										<td><code>## Small Header</code></td>
+										<td><span style="font-size: 90%"><b>Small
+													Header</b></span></td>
+									</tr>
+									<tr>
+										<td><code>_in italics_</code></td>
+										<td><em>in italics</em></td>
+									</tr>
+									<tr>
+										<td><code>**in bold**</code></td>
+										<td><b>in bold</b></td>
+									</tr>
+									<tr>
+										<td><code>[link](http://google.com)</code></td>
+										<td><a href="http://www.google.com">link</a></td>
+									</tr>
+									<tr>
+										<td><code>- a list</code></td>
+										<td><ul>
+												<li>a list</li>
+											</ul>
+									</tr>
+									<tr>
+										<td><code>1. numbered list</code></td>
+										<td><ol>
+												<li>numbered list</li>
+											</ol>
+									</tr>
+									<tr>
+										<td><code>![image][imagelink.png]</code></td>
+										<td><img
+											src="http://docs.google.com/drawings/pub?id=1WW3K33bpfZMlgW4lGb0uEvy4oUW2GijX26253MTCZlY&w=35" /></td>
+									</tr>
+									<tr>
+										<td><code>`code`</code></td>
+										<td><code>code</code></td>
+									</tr>
+									<tr>
+										<td><code>> blockquote</code></td>
+										<td><blockquote>
+												<p>blockquote</p>
+											</blockquote></td>
+									</tr>
+									<tr>
+										<td><code>&lt;b&gt;any html&lt;/b&gt;</code></td>
+										<td><b>any html</b></td>
+									</tr>
+								</table>
+
+							</div>
+
+
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="help-linking-and-navigation-tab">
+					<div class="container">
+						<div class="row">
+							<div class="span6">
+								<h4>Linking</h4>
+								<p>
+									The prime purpose of nodejump is not to write <em>one</em> web
+									page but rather to create a number of <em>interconnected</em>
+									pages at a rapid pace.
+								</p>
+								<p>There are numerous ways to create new pages and links
+									between existing pages.</p>
+
+								<h5>Insert Link to New Page</h5>
+								<p>
+									Just click the
+									<button class="btn btn-small btn-inverse">Insert Link</button>
+									button to insert a link to a new document at the current cursor
+									position.
+								</p>
+
+
+								<h5>Insert Link to Existing Page</h5>
+								<p>In order to insert a link to an existing page, you must
+									first get the address of the page you want to link to.</p>
+								<p>The address of each page is displayed on top of the
+									document preview. You can right click this link and copy the
+									link address to obtain a link.</p>
+								<img class="img-rounded"
+									src="http://docs.google.com/drawings/pub?id=1i-B63A0cyMf9wVrwG38T9-Sl98kN6uxQ4y22qtFhqow&w=448">
+								<p>You can then insert the obtained link using either
+									Markdown formatting or plain HTML:</p>
+								<p>
+									<code>[my link](http://your-link-here.com)</code>
+								</p>
+								<p>
+									<code>&lt;a
+										href=&quot;http://your-link-here.com&quot;&gt;my
+										link&lt;/a&gt;</code>
+								</p>
+							</div>
+							<div class="span6">
+								<h4>Navigation</h4>
+								<p>
+									To jump from one document to another, just <em>click on
+										the links shown in the document preview</em>.
+								<p>
+								<p>Otherwise, you can use the browser navigation buttons
+									like on any other webpage. So clicking the back button will
+									bring you back to the last documents you have visited.</p>
+								<p>You can also use your browsers history, favourites and
+									bookmarks as convenient ways to access your documents.</p>
+								<p>Lastly, if you are logged in, all your documents will be
+									saved in your user node. Open the settings to see your user
+									node and all documents and data stored under your node.</p>
+
+
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="tab-pane" id="help-sharing-tab">
+					<div class="container">
+						<div class="row">
+							<div class="span6">
+								<h4>Publish to the Web</h4>
+								<p>If you are logged in with your appjangle account, your
+									documents will by default be created as private documents (as
+									long as they are not created as children of an already
+									published document).</p>
+								<p>
+									You can click on the <a href="#" class="shareButton"
+										style="color: #909090;">share</a> link on top of the document
+									preview and click on
+									<button class="btn btn-small btn-primary">Publish Now</button>
+									to make your document available for the public web.
+								</p>
+								<p>If you are not logged in, all your documents will be
+									created as public by default.</p>
+							</div>
+							<div class="span6">
+								<h4>Share by Link</h4>
+								<p>You can generate unique links for your documents, which
+									will allow to edit and/or view the document and all of its
+									children.</p>
+								<p>
+									Just click on the <a href="#" class="shareButton"
+										style="color: #909090;">share</a> link on top of the document
+									preview and select the respective function in the share dialog.
+								</p>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- one.end -->

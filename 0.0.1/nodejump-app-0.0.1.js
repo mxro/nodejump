@@ -121,7 +121,40 @@
 			$(".insertLinkButton", elem).click(
 					function(evt) {
 						evt.preventDefault();
+						
+						var codemirror = nj.edit.getEditor();
+						
+						if (codemirror.getSelection() && codemirror.getSelection().length > 0) {
+							AJ.common.createMarkdownChildDocument({
+								client : client,
+								node : nj.loadedNode,
+								secret : nj.secret,
+								documentTitle : codemirror.getSelection(),
+								onSuccess : function(node, secret) {
+									
+									var absoluteLink = node.url();
+									
+									var relativeLink = absoluteLink.substring(absoluteLink
+											.lastIndexOf('/');
+									
+									codemirror.replaceRange("[" + res.title + "](."
+											+ res.relativeLink + ")", codemirror
+											.getCursor(), codemirror.getCursor(true), codemirror.getCursor(false));
 
+									});
+
+								},
+								onFailure : function(ex) {
+									AJ.ui.notify(
+											"Unexpected error while creating child document: "
+													+ ex, "alert-error");
+								}
+							});
+							
+							return;
+						} 
+						
+						
 						nj.insertLinkDialog.show({
 							node : nj.loadedNode,
 							secret : nj.secret,

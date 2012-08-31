@@ -145,9 +145,8 @@
 									codemirror.replaceRange("["
 											+ codemirror.getSelection() + "](."
 											+ relativeLink + ")", codemirror
-											.getCursor(), codemirror
-											.getCursor(true), codemirror
-											.getCursor(false));
+											.getCursor(false), codemirror
+											.getCursor(true));
 
 								},
 								onFailure : function(ex) {

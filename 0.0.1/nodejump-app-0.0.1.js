@@ -377,7 +377,14 @@
 					});
 
 					AJ.common.configureMarkdownNode(client, rootNode);
+					
+					var newToken = client.newPublicReadToken();
 
+					client.append({
+						node : newToken,
+						to : rootNode
+					});
+					
 					onSuccess(rootNode, res.secret);
 
 				},

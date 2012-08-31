@@ -337,12 +337,13 @@
 
 		nj.priv.createAndInsertChildDocument = function(title, replaceStart,
 				replaceEnd) {
-			title = AJ.utils.getSimpleText(title);
+			
+			var savetitle = AJ.utils.getSimpleText(title);
 			AJ.common.createMarkdownChildDocument({
 				client : client,
 				node : nj.loadedNode,
 				secret : nj.secret,
-				documentTitle : title,
+				documentTitle : savetitle,
 				onSuccess : function(node, secret) {
 
 					var codemirror = nj.edit.getEditor();

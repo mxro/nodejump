@@ -240,7 +240,11 @@
 							if (!safeSecret) {
 								safeSecret = AJ.userNodeSecret;
 							}
+<<<<<<< HEAD
 							nodeChangeHandler(nj, node, safeSecret);
+=======
+							nodeChangeHandler(nj, node, secret);
+>>>>>>> branch 'master' of ssh://git@github.com/nodejump/nodejump.git
 						}
 						required.editLoaded = true;
 						if (required.editLoaded && required.viewLoaded) {

@@ -215,6 +215,10 @@
 				nj.secret = secret;
 			}
 
+			if (!secret) {
+				secret = AJ.userNodeSecret;
+			}
+			
 			$(".currentUrl", elem).html(
 					"<a style='color: #909090;' href='" + node.url() + "' >"
 							+ node.url() + "</a>");
@@ -305,6 +309,7 @@
 			if (nj.loadedNode) {
 				$(".editStatus", elem).html("Synchronizing");
 				nj.edit.commitOrReload(function(wasChanged) {
+					
 					$(".editStatus", elem).html("Saved");
 				});
 			}

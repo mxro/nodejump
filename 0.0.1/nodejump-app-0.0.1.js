@@ -26,6 +26,10 @@
 		nj.view = null;
 		// share component
 		nj.share = null;
+
+		nj.isAnonymous = false;
+
+		nj.insertLinkDialog = null;
 		// monitor for auto-refresh
 		nj.monitor = null;
 		// timer for auto-commit
@@ -42,8 +46,21 @@
 						return converter.makeHtml(input);
 					}));
 
-			nj.share = $.initAjShare($('.shareDialog', elem), client);
-			
+			nj.share = $.initAjShareDialog({
+				elem : $('.shareDialog', elem),
+				client : client,
+				editLinkFactory : function(url, token) {
+					return "http://nodejump.com/#" + url + "&" + token;
+				},
+				viewLinkFactory : function(url, token) {
+					return "http://nodejump.com/#" + url + "&" + token
+							+ "&feature=readOnly";
+				}
+			});
+
+			nj.insertLinkDialog = $.initNewLinkDialog($('.insertLinkDialog',
+					elem), client);
+
 			nj.edit = $.initAjEdit($(".editorContent", elem), client);
 
 			nj.edit.setEditorFactory(function() {
@@ -104,74 +121,86 @@
 
 			});
 
-			$(".insertLinkButton", elem).click(function(evt) {
-				evt.preventDefault();
+			$(".insertLinkButton", elem).click(
+					function(evt) {
+						evt.preventDefault();
 
-				$(".documentTitleDialog-title", elem).val("");
+						var codemirror = nj.edit.getEditor();
 
-				$(".documentTitleDialog", elem).modal('show');
+						var title = null;
 
-			});
+						var selection = codemirror.getSelection();
+
+						var somethingSelected = selection
+								&& selection.length > 0;
+
+						if (somethingSelected && selection.length < 20) {
+							nj.priv.createAndInsertChildDocument(codemirror
+									.getSelection(),
+									codemirror.getCursor(true), codemirror
+											.getCursor(false));
+							return;
+						}
+
+						var inWord = AJ.utils.inWord(codemirror
+								.indexFromPos(codemirror.getCursor()),
+								codemirror.getValue());
+
+						if (inWord) {
+
+							var exWord = AJ.utils.extractWord(codemirror
+									.indexFromPos(codemirror.getCursor()),
+									codemirror.getValue());
+
+							nj.priv.createAndInsertChildDocument(exWord.word,
+									codemirror.posFromIndex(exWord.startPos),
+									codemirror.posFromIndex(exWord.endPos));
+
+							return;
+						}
+
+						// if nothing is selected, ask user for document title.
+						nj.insertLinkDialog.show({
+							node : nj.loadedNode,
+							secret : nj.secret,
+							onLinkCreated : function(res) {
+								var codemirror = nj.edit.getEditor();
+
+								codemirror.replaceRange("[" + res.title + "](."
+										+ res.relativeLink + ")", codemirror
+										.getCursor());
+							},
+							onCancel : function() {
+
+							}
+						});
+
+					});
 
 			$('.shareButton', elem).click(function(evt) {
 				evt.preventDefault();
-				
+
 				nj.share.show(nj.loadedNode);
 			});
-			
-			$(".documentTitleDialog-cancel", elem).click(function(evt) {
-				evt.preventDefault();
-				$(".documentTitleDialog", elem).modal('hide');
-			});
-
-			$(".documentTitleDialog-createDocument", elem)
-					.click(
-							function(evt) {
-								evt.preventDefault();
-
-								var title = $(".documentTitleDialog-title",
-										elem).val();
-
-								if (!title) {
-									alert("Please specify a title");
-									return;
-								}
-
-								$(".documentTitleDialog", elem).modal('hide');
-
-								nj.priv.createChildDocument(title, function(
-										node, secret) {
-
-									var absoluteLink = node.url();
-									var relativeLink = absoluteLink
-											.substring(absoluteLink
-													.lastIndexOf('/'));
-
-									var codemirror = nj.edit.getEditor();
-
-									codemirror.replaceRange("[" + title + "](."
-											+ relativeLink + ")", codemirror
-											.getCursor());
-
-								});
-
-							});
 
 		};
 
 		nj.initForAnonymous = function(onSuccess) {
 
+			nj.isAnonymous = true;
+
 			nj.priv.createAnonymousDocument(function(node, secret) {
+
 				nj.load(node, secret, onSuccess);
 			});
 
-		}
+		};
 
 		nj.initForUser = function(onSuccess) {
 			nj.priv.createNewUserDocument(function(node, secret) {
 				nj.load(node, secret, onSuccess);
 			});
-		}
+		};
 
 		nj.load = function(node, secret, callback) {
 
@@ -180,15 +209,20 @@
 				$('.viewStatus', elem).html("Loading");
 				$('.shareComponent', elem).hide();
 			}
-			
-			nj.loadedNode = node;
-			nj.secret = secret;
 
+			nj.loadedNode = node;
+			if (secret) {
+				nj.secret = secret;
+			}
+
+			if (!secret) {
+				secret = AJ.userNodeSecret;
+			}
+			
 			$(".currentUrl", elem).html(
-					"<a style='color: #909090;' href='" + node.url() + "' >" + node.url() + "</a>");
-			
-			
-			
+					"<a style='color: #909090;' href='" + node.url() + "' >"
+							+ node.url() + "</a>");
+
 			client.load({
 				node : node,
 				secret : secret,
@@ -203,7 +237,14 @@
 						nj.valueCache = nj.edit.getValue().valueOf();
 
 						if (nodeChangeHandler) {
-							nodeChangeHandler(node, secret);
+							var safeSecret = secret;
+							if (!safeSecret) {
+								safeSecret = nj.secret;
+							}
+							if (!safeSecret) {
+								safeSecret = AJ.userNodeSecret;
+							}
+							nodeChangeHandler(nj, node, safeSecret);
 						}
 						required.editLoaded = true;
 						if (required.editLoaded && required.viewLoaded) {
@@ -249,6 +290,10 @@
 				link.secret = AJ.userNodeSecret;
 			}
 
+			if (!AJ.userNodeUri) {
+				nj.isAnonymous = true;
+			}
+
 			nj.load(client.reference(link.address), link.secret, function() {
 				callback(true);
 			});
@@ -264,14 +309,17 @@
 			if (nj.loadedNode) {
 				$(".editStatus", elem).html("Synchronizing");
 				nj.edit.commitOrReload(function(wasChanged) {
+					
 					$(".editStatus", elem).html("Saved");
 				});
 			}
-		}
+		};
 
 		nj.startAutoCommit = function() {
-			if (nj.committer)
+			if (nj.committer) {
 				return;
+			}
+
 			nj.committer = setInterval(function() {
 				nj.commitLocal(function() {
 
@@ -282,15 +330,16 @@
 		nj.stopAutoCommit = function() {
 			clearInterval(nj.committer);
 			nj.committer = null;
-			
+
 			nj.commitLocal(function() {
 
 			});
 		};
 
 		nj.startAutoRefresh = function() {
-			if (nj.monitor)
+			if (nj.monitor) {
 				return;
+			}
 			nj.monitor = setInterval(function() {
 				nj.commitOrLoadRemote(function() {
 
@@ -310,28 +359,32 @@
 			nj.monitor = null;
 		};
 
+		nj.isAnonymousUser = function() {
+			return nj.isAnonymous;
+		};
+
 		nj.priv = {};
 
-		nj.priv.createChildDocument = function(documentTitle, onSuccess) {
-			var simpleTitle = AJ.utils.getSimpleText(documentTitle);
-			if (simpleTitle.length > 25) {
-				simpleTitle = simpleTitle.substring(0, 24);
-			}
+		nj.priv.createAndInsertChildDocument = function(title, replaceStart,
+				replaceEnd) {
 
-			client.load({
+			var savetitle = AJ.utils.getSimpleText(title);
+			AJ.common.createMarkdownChildDocument({
+				client : client,
 				node : nj.loadedNode,
 				secret : nj.secret,
-				onSuccess : function(res) {
+				documentTitle : savetitle,
+				onSuccess : function(node, secret) {
 
-					var newNode = client.append({
-						node : "# " + documentTitle + "\n\n",
-						to : res.loadedNode,
-						atClosestAddress : "./" + simpleTitle
-					});
+					var codemirror = nj.edit.getEditor();
 
-					AJ.common.configureMarkdownNode(client, newNode);
+					var absoluteLink = node.url();
 
-					onSuccess(newNode, nj.secret);
+					var relativeLink = absoluteLink.substring(absoluteLink
+							.lastIndexOf('/'));
+
+					codemirror.replaceRange("[" + title + "](." + relativeLink
+							+ ")", replaceStart, replaceEnd);
 
 				},
 				onFailure : function(ex) {
@@ -339,6 +392,7 @@
 							"Unexpected error while creating child document: "
 									+ ex, "alert-error");
 				}
+
 			});
 		};
 
@@ -353,6 +407,13 @@
 					});
 
 					AJ.common.configureMarkdownNode(client, rootNode);
+
+					var newToken = client.newPublicReadToken();
+
+					client.append({
+						node : newToken,
+						to : rootNode
+					});
 
 					onSuccess(rootNode, res.secret);
 
@@ -450,7 +511,9 @@
 			startAutoCommit : nj.startAutoCommit,
 			stopAutoCommit : nj.stopAutoCommit,
 			startAutoRefresh : nj.startAutoRefresh,
-			stopAutoRefresh : nj.stopAutoRefresh
+			stopAutoRefresh : nj.stopAutoRefresh,
+			isAnonymousUser : nj.isAnonymousUser
+
 		};
 	};
 
